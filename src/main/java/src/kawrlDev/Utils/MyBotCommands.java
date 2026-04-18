@@ -10,7 +10,7 @@ class MyBotCommands {
     static void pingBotCommand(SlashCommandInteractionEvent event){
         long ping = event.getJDA().getGatewayPing();
 
-        event.reply(String.format("Pong! 🏓 (%.2f ms)",(float) ping)).queue();
+        event.reply(String.format("Pong! 🏓 (%d ms)",ping)).queue();
         log.info("Bot has been pinged by {}", event.getUser().getName());
     }
 
