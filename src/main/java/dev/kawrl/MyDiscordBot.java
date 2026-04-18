@@ -8,7 +8,6 @@ import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import dev.kawrl.Utils.Listeners;
 
 public class MyDiscordBot {
     private static final Dotenv dotenv = Dotenv.load();
