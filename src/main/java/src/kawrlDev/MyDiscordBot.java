@@ -12,7 +12,9 @@ import org.slf4j.LoggerFactory;
 public class MyDiscordBot {
     private static final Dotenv dotenv = Dotenv.load();
     private static final Logger log = LoggerFactory.getLogger(MyDiscordBot.class);
+
     private static final String discordBotToken = dotenv.get("BOT_API");
+    public static final String userID = dotenv.get("USER_ID");
     public static void main() {
         try {
             JDA jda = JDABuilder.createDefault(discordBotToken)
@@ -20,12 +22,13 @@ public class MyDiscordBot {
                             GatewayIntent.MESSAGE_CONTENT,
                             GatewayIntent.DIRECT_MESSAGES
                     )
-                    .setActivity(Activity.customStatus("Running in the background!"))
+                    .setActivity(Activity.customStatus("Status: Active!"))
                     .addEventListeners(new Listeners())
                     .build()
                     .awaitReady();
 
             jda.updateCommands().addCommands(
+                    Commands.slash("ping","Checks if bot is alive"),
                     Commands.slash("shutdown","Shuts down the Discord Bot.")
             ).queue();
 
