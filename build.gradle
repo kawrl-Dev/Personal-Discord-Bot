@@ -32,7 +32,7 @@ application {
 
 shadowJar {
     manifest {
-        attributes 'Main-Class': 'src.kawrlDev.Main'
+        attributes 'Main-Class': 'src.kawrlDev.MyDiscordBot'
     }
     archiveClassifier.set('')  // removes the '-all' suffix from the output jar name
 }
