@@ -27,12 +27,12 @@ test {
 }
 
 application {
-    mainClass = 'src.kawrlDev.Main'
+    mainClass = 'src.kawrlDev.MyDiscordBot'
 }
 
 shadowJar {
     manifest {
         attributes 'Main-Class': 'src.kawrlDev.MyDiscordBot'
     }
-    archiveClassifier.set('')  // removes the '-all' suffix from the output jar name
+    archiveClassifier.set('')
 }
