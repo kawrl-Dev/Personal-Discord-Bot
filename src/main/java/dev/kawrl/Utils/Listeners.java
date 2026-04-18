@@ -1,9 +1,9 @@
-package src.kawrlDev.Utils;
+package dev.kawrl.Utils;
 
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
-import static src.kawrlDev.Utils.MyBotCommands.*;
+import static dev.kawrl.Utils.MyBotCommands.*;
 
 public class Listeners extends ListenerAdapter {
     @Override

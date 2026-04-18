@@ -1,9 +1,9 @@
-package src.kawrlDev.Utils;
+package dev.kawrl.Utils;
 
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import src.kawrlDev.MyDiscordBot;
+import dev.kawrl.MyDiscordBot;
 
 class MyBotCommands {
     private static final Logger log = LoggerFactory.getLogger(MyBotCommands.class);

@@ -1,4 +1,4 @@
-package src.kawrlDev;
+package dev.kawrl;
 
 import io.github.cdimascio.dotenv.Dotenv;
 import net.dv8tion.jda.api.JDA;
@@ -8,7 +8,7 @@ import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import src.kawrlDev.Utils.Listeners;
+import dev.kawrl.Utils.Listeners;
 
 public class MyDiscordBot {
     private static final Dotenv dotenv = Dotenv.load();
