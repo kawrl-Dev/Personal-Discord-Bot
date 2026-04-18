@@ -30,7 +30,7 @@ public class Listeners extends ListenerAdapter {
                 return;
             }
 
-            event.reply("Shutting down... goodbye!").queue(_ -> {
+            event.reply("Shutting down... goodbye!").setEphemeral(true).queue(_ -> {
                 log.info("Shutdown command issued by {}", event.getUser().getName());
                 event.getJDA().shutdown();
             });
