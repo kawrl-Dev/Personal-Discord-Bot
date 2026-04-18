@@ -17,6 +17,9 @@ dependencies {
 
     implementation("net.dv8tion:JDA:6.4.1")
     implementation ('io.github.cdimascio:dotenv-java:3.2.0')
+
+    // Logging
+    implementation 'ch.qos.logback:logback-classic:1.5.32'
 }
 
 test {
@@ -25,4 +28,11 @@ test {
 
 application {
     mainClass = 'src.kawrlDev.Main'
+}
+
+shadowJar {
+    manifest {
+        attributes 'Main-Class': 'src.kawrlDev.Main'
+    }
+    archiveClassifier.set('')  // removes the '-all' suffix from the output jar name
 }
