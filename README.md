@@ -1,6 +1,6 @@
-# MyDiscordBot
+# My Personal Discord Bot
 
-A lightweight Discord bot built with Java and JDA, featuring a simple slash command architecture and structured logging.
+This passion project showcases a lightweight Discord bot built with Java using the [Java Discord API](https://github.com/discord-jda/JDA), featuring a simple slash command architecture and structured logging.
 ___
 ## Requirements
 
@@ -48,7 +48,7 @@ USER_ID=your_discord_user_id_here
 | `BOT_API` | Your Discord bot token from the Developer Portal          |
 | `USER_ID` | Your Discord user ID — grants access to owner-only commands |
 
-> ⚠️ Never commit your `.env` file. It is already listed in `.gitignore`.
+> Note: Never commit your `.env` file. It is already listed in `.gitignore`.
  
 ---
 
@@ -84,5 +84,6 @@ logs/                              # Runtime log output (git-ignored)
 ---
 
 ## Planned Features
-- [ ] More slash commands
+- [ ] To-Do List Commands
 - [ ] MySQL Database Integration
+- [ ]  Role-based permission system beyond single-owner restriction
