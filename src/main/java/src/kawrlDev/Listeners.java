@@ -1,4 +1,7 @@
 package src.kawrlDev;
 
-public class Listeners {
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
+
+public class Listeners extends ListenerAdapter {
+    // placeholder comment lol
 }

@@ -1,8 +1,10 @@
 plugins {
     id 'java'
+    id 'application'
+    id("com.gradleup.shadow") version "9.4.1"
 }
 
-group = 'src.kawrl-Dev'
+group = 'src.kawrlDev'
 version = '1.0-SNAPSHOT'
 
 repositories {
@@ -11,9 +13,16 @@ repositories {
 
 dependencies {
     testImplementation platform('org.junit:junit-bom:5.10.0')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation ('org.junit.jupiter:junit-jupiter')
+
+    implementation("net.dv8tion:JDA:6.4.1")
+    implementation ('io.github.cdimascio:dotenv-java:3.2.0')
 }
 
 test {
     useJUnitPlatform()
+}
+
+application {
+    mainClass = 'src.kawrlDev.Main'
 }
