@@ -1,7 +1,18 @@
 #Logs
 logs/
 *.log
+
+# Json Files
+src/main/resources/jsonFiles/
+*.json
+
+# Icon for Intellij Project Custom Icon
+icon.svg
+
+# env file
 .env
+
+#other stuff
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar
