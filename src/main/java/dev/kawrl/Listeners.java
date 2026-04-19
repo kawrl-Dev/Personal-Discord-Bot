@@ -19,7 +19,7 @@ public class Listeners extends ListenerAdapter {
     public Listeners() {
         commands.put("ping", new PingCommand());
         commands.put("shutdown", new ShutdownCommand());
-        commands.put("create-new-list", new CreateNewTaskListCommand());
+        commands.put("new-task-list", new CreateNewTaskListCommand());
     }
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
