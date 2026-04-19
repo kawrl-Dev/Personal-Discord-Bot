@@ -25,7 +25,7 @@ public class CreateNewTaskListCommand implements SlashCommandInterface {
         if (option == null || member == null) return;
 
         String taskListName = option.getAsString();
-        String username = member.getEffectiveName();
+        String username = member.getUser().getName();
         String userID = member.getId();
 
         Path jsonDir = MyDiscordBot.resolveJsonFilesDirectory();

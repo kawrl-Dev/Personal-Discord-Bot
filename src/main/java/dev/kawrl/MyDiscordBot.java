@@ -53,7 +53,7 @@ public class MyDiscordBot {
                 jda.updateCommands().addCommands(
                         Commands.slash("ping","Checks if bot is alive"),
                         Commands.slash("shutdown","Shuts down the Discord Bot."),
-                        Commands.slash("new-task-list","Creates new list for tasks")
+                        Commands.slash("create-list","Creates new list for tasks")
                                 .addOption(OptionType.STRING,"list-name","Name of Task List",true)
                 ).queue();
                 log.info("Commands Registered!");
