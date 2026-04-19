@@ -55,7 +55,8 @@ public class CreateNewTaskListCommand implements SlashCommandInterface {
         mapper.writerWithDefaultPrettyPrinter().writeValue(userFile.toFile(), userData);
 
         log.info("New task list '{}' created for user '{}'", taskListName, username);
-        event.reply(String.format("**New Task List Created!** Name: **%s**", taskListName))
+        event.reply(String.format("**New Task List Created!** Name: *%s*", taskListName))
+                .setEphemeral(true)
                 .queue();
     }
 }
