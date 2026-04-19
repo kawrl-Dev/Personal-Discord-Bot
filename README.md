@@ -54,11 +54,11 @@ USER_ID=your_discord_user_id_here
 
 ## Usage / Commands
 
-| Command        | Description                                              | Restricted      |
-|----------------|----------------------------------------------------------|-----------------|
-| `/ping`        | Checks if the bot is alive, returns gateway latency      | No              |
-| `/shutdown`    | Gracefully shuts down the bot                            | Yes — owner only |
-| `/create-list` | Creates a new personal task list                         | No              |
+| Command        | Description                                                                                         | Restricted       |
+|----------------|-----------------------------------------------------------------------------------------------------|------------------|
+| `/ping`        | Checks if the bot is alive, returns gateway latency ![Ping Command.png](images/Ping%20Command.png)  | No               |
+| `/shutdown`    | Gracefully shuts down the bot ![Shutdown Bot.png](images/Shutdown%20Bot.png)                        | Yes — owner only |
+| `/create-list` | Creates a new personal task list ![Create New Task List.png](images/Create%20New%20Task%20List.png) | No               |
 
 Slash commands must be registered before use by running the bot once with the `--register` flag.
  
