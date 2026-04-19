@@ -14,7 +14,7 @@ public class ShutdownCommand implements SlashCommandInterface {
             event.reply("You don't have permission to do that.").setEphemeral(true).queue();
             return;
         }
-        event.reply("Shutting down... goodbye!").setEphemeral(true).queue(_ -> {
+        event.reply("Zzzzzzzz...").setEphemeral(true).queue(_ -> {
             log.info("Shutdown command issued by {}", event.getUser().getName());
             event.getJDA().shutdown();
         });
