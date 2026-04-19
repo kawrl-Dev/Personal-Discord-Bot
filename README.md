@@ -1,4 +1,4 @@
-# My Personal Discord Bot
+# 🤖 My Personal Discord Bot 🤖
 
 This passion project showcases a lightweight Discord bot built with Java using the [Java Discord API](https://github.com/discord-jda/JDA), featuring a simple slash command architecture and structured logging.
 ___
@@ -54,10 +54,11 @@ USER_ID=your_discord_user_id_here
 
 ## Usage / Commands
 
-| Command     | Description                        | Restricted |
-|-------------|------------------------------------|------------|
-| `/ping`     | Checks if the bot is alive, returns gateway latency | No |
-| `/shutdown` | Gracefully shuts down the bot      | Yes — owner only |
+| Command        | Description                                              | Restricted      |
+|----------------|----------------------------------------------------------|-----------------|
+| `/ping`        | Checks if the bot is alive, returns gateway latency      | No              |
+| `/shutdown`    | Gracefully shuts down the bot                            | Yes — owner only |
+| `/create-list` | Creates a new personal task list                         | No              |
 
 Slash commands must be registered before use by running the bot once with the `--register` flag.
  
@@ -73,10 +74,17 @@ src/main/java/dev/kawrl/
 │   └── SlashCommandInterface.java # Interface all commands implement
 └── botcommands/
     ├── PingCommand.java           # /ping implementation
-    └── ShutdownCommand.java       # /shutdown implementation
+    ├── ShutdownCommand.java       # /shutdown implementation
+    └── productivityfeatures/
+        ├── CreateNewTaskListCommand.java  # /create-list implementation
+        └── classes/
+            ├── Task.java          # Represents a single task item
+            ├── TaskList.java      # Named list containing Task entries
+            └── UserTaskData.java  # Per-user container for all task lists
  
 src/main/resources/
-└── logback.xml                    # Logging config (console + rolling file output)
+├── logback.xml                    # Logging config (console + rolling file output)
+└── jsonFiles/                     # Per-user task data stored as JSON (git-ignored)
  
 logs/                              # Runtime log output (git-ignored)
 ```
@@ -84,6 +92,6 @@ logs/                              # Runtime log output (git-ignored)
 ---
 
 ## Planned Features
-- [ ] To-Do List Commands
+- [x] To-Do List Commands
 - [ ] MySQL Database Integration
-- [ ]  Role-based permission system beyond single-owner restriction
+- [ ] Role-based permission system beyond single-owner restriction
