@@ -2,6 +2,7 @@ package dev.kawrl;
 
 import dev.kawrl.botcommands.PingCommand;
 import dev.kawrl.botcommands.ShutdownCommand;
+import dev.kawrl.botcommands.productivityfeatures.CreateNewTaskListCommand;
 import dev.kawrl.interfaces.SlashCommandInterface;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -18,6 +19,7 @@ public class Listeners extends ListenerAdapter {
     public Listeners() {
         commands.put("ping", new PingCommand());
         commands.put("shutdown", new ShutdownCommand());
+        commands.put("create-new-list", new CreateNewTaskListCommand());
     }
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
@@ -30,7 +32,6 @@ public class Listeners extends ListenerAdapter {
                 event.reply("Something went wrong.").setEphemeral(true).queue();
             }
         }
-
         else log.warn("Unknown command received: {}", event.getName());
     }
 }
