@@ -56,7 +56,6 @@ public class CreateNewTaskListCommand implements SlashCommandInterface {
 
         log.info("New task list '{}' created for user '{}'", taskListName, username);
         event.reply(String.format("**New Task List Created!** Name: **%s**", taskListName))
-                .setEphemeral(true)
                 .queue();
     }
 }
