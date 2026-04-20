@@ -86,7 +86,7 @@ CREATE TABLE tasks (
     list_id      BIGINT       NOT NULL,
     task_text    TEXT         NOT NULL,
     priority     ENUM('LOW', 'MEDIUM', 'HIGH') NOT NULL DEFAULT 'MEDIUM',
-    is_completed TINYINT(1)   NOT NULL DEFAULT 0,
+    is_completed TINYINT   NOT NULL DEFAULT 0,
     due_date     DATE,
     FOREIGN KEY (list_id) REFERENCES task_lists(list_id)
 );
