@@ -1,6 +1,6 @@
 # 🤖 My Personal Discord Bot 🤖
 
-This passion project showcases a lightweight Discord bot built with Java using the [Java Discord API](https://github.com/discord-jda/JDA), featuring a simple slash command architecture and structured logging.
+This passion project showcases a lightweight Discord bot built with Java and Kotlin using the [Java Discord API](https://github.com/discord-jda/JDA), featuring a simple slash command architecture and structured logging.
 ___
 ## Requirements
 
@@ -73,8 +73,8 @@ src/main/java/dev/kawrl/
 ├── interfaces/
 │   └── SlashCommandInterface.java # Interface all commands implement
 └── botcommands/
-    ├── PingCommand.java           # /ping implementation
-    ├── ShutdownCommand.java       # /shutdown implementation
+    ├── PingCommand.kt             # /ping implementation (Kotlin)
+    ├── ShutdownCommand.kt         # /shutdown implementation (Kotlin)
     └── productivityfeatures/
         ├── CreateNewTaskListCommand.java  # /create-list implementation
         └── classes/
