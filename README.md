@@ -1,12 +1,13 @@
 # 🤖 My Personal Discord Bot 🤖
 
-This passion project showcases a lightweight Discord bot built with Java and Kotlin using the [Java Discord API](https://github.com/discord-jda/JDA), featuring a simple slash command architecture and structured logging.
+This passion project showcases a lightweight Discord bot built with Java and Kotlin using the [Java Discord API](https://github.com/discord-jda/JDA), featuring a simple slash command architecture, structured logging, and MySQL database integration via HikariCP.
 ___
 ## Requirements
 
 - Java 17+
 - Gradle (or use the included `gradlew` wrapper)
 - A Discord bot token ([Discord Developer Portal](https://discord.com/developers/applications))
+- A running MySQL instance
 ---
 
 ## Setup & Installation
@@ -41,15 +42,56 @@ Create a `.env` file in the root directory with the following variables:
 ```env
 BOT_API=your_discord_bot_token_here
 USER_ID=your_discord_user_id_here
+DB_HOST=localhost
+DB_PORT=3306
+DB_NAME=your_database_name
+DB_USER=your_mysql_username
+DB_PASSWORD=your_mysql_password
 ```
 
-| Variable  | Description                                               |
-|-----------|-----------------------------------------------------------|
-| `BOT_API` | Your Discord bot token from the Developer Portal          |
-| `USER_ID` | Your Discord user ID — grants access to owner-only commands |
+| Variable      | Description                                                      |
+|---------------|------------------------------------------------------------------|
+| `BOT_API`     | Your Discord bot token from the Developer Portal                 |
+| `USER_ID`     | Your Discord user ID — grants access to owner-only commands      |
+| `DB_HOST`     | MySQL server host (e.g. `localhost`)                             |
+| `DB_PORT`     | MySQL server port (default: `3306`)                              |
+| `DB_NAME`     | Name of the database to connect to                               |
+| `DB_USER`     | MySQL username                                                   |
+| `DB_PASSWORD` | MySQL password                                                   |
 
 > Note: Never commit your `.env` file. It is already listed in `.gitignore`.
  
+---
+
+## Database Setup
+
+The bot uses MySQL with HikariCP for connection pooling. Ensure your MySQL instance is running and the database exists before starting the bot. The schema requires the following tables:
+
+```sql
+CREATE TABLE users (
+    user_id   VARCHAR(32)  PRIMARY KEY,
+    username  VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE task_lists (
+    list_id   BIGINT       AUTO_INCREMENT PRIMARY KEY,
+    user_id   VARCHAR(32)  NOT NULL,
+    list_name VARCHAR(100) NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    UNIQUE (user_id, list_name)
+);
+
+CREATE TABLE tasks (
+    task_id      BIGINT       AUTO_INCREMENT PRIMARY KEY,
+    list_id      BIGINT       NOT NULL,
+    task_text    TEXT         NOT NULL,
+    priority     ENUM('LOW', 'MEDIUM', 'HIGH') NOT NULL DEFAULT 'MEDIUM',
+    is_completed TINYINT(1)   NOT NULL DEFAULT 0,
+    due_date     DATE,
+    FOREIGN KEY (list_id) REFERENCES task_lists(list_id)
+);
+```
+
 ---
 
 ## Usage / Commands
@@ -68,23 +110,21 @@ Slash commands must be registered before use by running the bot once with the `-
 
 ```
 src/main/java/dev/kawrl/
-├── MyDiscordBot.java              # Entry point — builds and starts the JDA instance
+├── MyDiscordBot.kt                # Entry point — builds and starts the JDA instance
 ├── Listeners.java                 # Routes slash command events to the correct handler
 ├── interfaces/
 │   └── SlashCommandInterface.java # Interface all commands implement
-└── botcommands/
-    ├── PingCommand.kt             # /ping implementation (Kotlin)
-    ├── ShutdownCommand.kt         # /shutdown implementation (Kotlin)
-    └── productivityfeatures/
-        ├── CreateNewTaskListCommand.java  # /create-list implementation
-        └── classes/
-            ├── Task.java          # Represents a single task item
-            ├── TaskList.java      # Named list containing Task entries
-            └── UserTaskData.java  # Per-user container for all task lists
+├── botcommands/
+│   ├── PingCommand.kt             # /ping implementation (Kotlin)
+│   ├── ShutdownCommand.kt         # /shutdown implementation (Kotlin)
+│   └── productivityfeatures/
+│       └── CreateNewTaskListCommand.java  # /create-list implementation
+└── database/
+    ├── DatabaseManager.java       # HikariCP connection pool setup and lifecycle
+    └── TaskRepo.java              # All SQL queries for users, task lists, and tasks
  
 src/main/resources/
-├── logback.xml                    # Logging config (console + rolling file output)
-└── jsonFiles/                     # Per-user task data stored as JSON (git-ignored)
+└── logback.xml                    # Logging config (console + rolling file output)
  
 logs/                              # Runtime log output (git-ignored)
 ```
@@ -92,6 +132,11 @@ logs/                              # Runtime log output (git-ignored)
 ---
 
 ## Planned Features
-- [x] To-Do List Commands
-- [ ] MySQL Database Integration
-- [ ] Role-based permission system beyond single-owner restriction
+- [x] **MySQL Database Integration**
+- **To-Do List Commands**
+  - [ ] `/add-task` — Add a task to an existing list with priority and optional due date
+  - [ ] `/view-list` — Display all tasks in a chosen list
+  - [ ] `/complete-task` — Mark a task as done by its ID
+  - [ ] `/delete-task` — Remove a task by its ID
+  - [ ] `/search-task` — Search across all lists by keyword
+  - [ ] `/stats` — View task statistics and completion insights
