@@ -27,6 +27,12 @@ dependencies {
 
     // Jackson Databind
     implementation("tools.jackson.core:jackson-databind:3.1.1")
+
+    // MySQL Connector
+    implementation 'com.mysql:mysql-connector-j:9.3.0'
+
+    // HikariCP — connection pooling
+    implementation 'com.zaxxer:HikariCP:6.3.0'
 }
 
 test {

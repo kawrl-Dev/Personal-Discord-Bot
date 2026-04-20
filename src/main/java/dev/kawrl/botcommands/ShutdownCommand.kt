@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory
 private val logger: Logger = LoggerFactory.getLogger(ShutdownCommand::class.java)
 class ShutdownCommand : SlashCommandInterface{
     override fun execute(event: SlashCommandInteractionEvent) {
-        if (!event.user.id.equals(MyDiscordBot::userID)){
+        if (event.user.id != MyDiscordBot.userID){
             event.reply("You don't have permission to do that!").setEphemeral(true).queue()
             return
         }
