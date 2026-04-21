@@ -2,7 +2,9 @@ package dev.kawrl.database;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * All SQL queries for tasks and task lists live here.
@@ -68,18 +70,17 @@ public class TaskRepo {
         }
     }
 
-    public static List<String> getListNamesForUser(String userID) throws SQLException{
-        String sql = "SELECT list_name from task_lists WHERE user_id = ?";
+    public static Map<String, Long> getListNamesForUser(String userID) throws SQLException{
+        String sql = "SELECT list_id, list_name from task_lists WHERE user_id = ?";
         try (Connection conn = DatabaseManager.getConnection()){
             PreparedStatement preparedStatement = conn.prepareStatement(sql);{
                 preparedStatement.setString(1,userID);
                 try (ResultSet result = preparedStatement.executeQuery()){
-                    List<String> stringList = new ArrayList<>();
-                    while (result.next()){
-                        stringList.add(result.getString("list_name"));
+                    Map<String, Long> lists = new LinkedHashMap<>();
+                    while (result.next()) {
+                        lists.put(result.getString("list_name"), result.getLong("list_id"));
                     }
-
-                    return stringList;
+                    return lists;
                 }
             }
         }

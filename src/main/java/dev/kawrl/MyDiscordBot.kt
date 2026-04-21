@@ -46,7 +46,8 @@ object MyDiscordBot {
                     Commands.slash("ping", "Checks if bot is alive"),
                     Commands.slash("shutdown", "Shuts down the Discord Bot."),
                     Commands.slash("create-list", "Creates a new task list")
-                        .addOption(OptionType.STRING, "list-name", "Name of the task list", true)
+                        .addOption(OptionType.STRING, "list-name", "Name of the task list", true),
+                    Commands.slash("add-task","Create a task")
                 ).queue()
                 log.info("Commands registered!")
             }

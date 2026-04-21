@@ -3,35 +3,68 @@ package dev.kawrl;
 import dev.kawrl.botcommands.PingCommand;
 import dev.kawrl.botcommands.ShutdownCommand;
 import dev.kawrl.botcommands.productivityfeatures.CreateNewTaskListCommand;
-import dev.kawrl.interfaces.SlashCommandInterface;
+import dev.kawrl.botcommands.productivityfeatures.SelectTaskListMenu;
+import dev.kawrl.interfaces.CommandHandler;
+import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class Listeners extends ListenerAdapter {
-    private static final Logger log = LoggerFactory.getLogger(Listeners.class);
-    private final Map<String, SlashCommandInterface> commands = new HashMap<>();
+    private final Map<String, CommandHandler.SlashCommandInterface> slashCommands = new HashMap<>();
+    private final Map<String, CommandHandler.ModalInterface> modalHandlers = new HashMap<>();
+    private final Map<String, CommandHandler.StringSelectMenuInterface> menuSelectHandlers = new HashMap<>();
 
     public Listeners() {
-        commands.put("ping", new PingCommand());
-        commands.put("shutdown", new ShutdownCommand());
-        commands.put("create-list", new CreateNewTaskListCommand());
+        // Slash Commands
+        slashCommands.put("ping", new PingCommand());
+        slashCommands.put("shutdown", new ShutdownCommand());
+        slashCommands.put("create-list", new CreateNewTaskListCommand());
+
+        /*
+        * Modal Interactions & String Select Menus
+        * - None for now TODO[Update it if there are new modal/menu interactions]
+        * */
+
+        // Menu Select
+        menuSelectHandlers.put("select-list",new SelectTaskListMenu());
     }
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
-        SlashCommandInterface command = commands.get(event.getName().toLowerCase());
-        if (command != null){
-            try {
-                command.execute(event);
-            } catch (Exception e) {
-                log.error("Error executing command '{}': {}", event.getName(), e.toString());
-                event.reply("Something went wrong.").setEphemeral(true).queue();
-            }
+        CommandHandler.SlashCommandInterface command = slashCommands.get(event.getName().toLowerCase());
+        if (command != null) try {
+            command.execute(event);
+        } catch (Exception e) {
+            event.reply("Something went wrong!")
+                    .setEphemeral(true)
+                    .queue();
         }
-        else log.warn("Unknown command received: {}", event.getName());
+    }
+
+    @Override
+    public void onModalInteraction(ModalInteractionEvent event) {
+        CommandHandler.ModalInterface handler = modalHandlers.get(event.getModalId());
+        if (handler != null) try {
+            handler.execute(event);
+        } catch (Exception e) {
+            event.reply("Something went wrong!")
+                    .setEphemeral(true)
+                    .queue();
+        }
+    }
+
+    @Override
+    public void onStringSelectInteraction(StringSelectInteractionEvent event) {
+        CommandHandler.StringSelectMenuInterface handler = menuSelectHandlers.get(event.getComponentId());
+        if (handler != null) try {
+            handler.handle(event);
+        } catch (Exception e) {
+            event.reply("Something went wrong!")
+                    .setEphemeral(true)
+                    .queue();
+        }
     }
 }
