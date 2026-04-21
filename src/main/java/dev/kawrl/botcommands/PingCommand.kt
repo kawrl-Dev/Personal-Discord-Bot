@@ -1,12 +1,9 @@
 package dev.kawrl.botcommands
 
-import dev.kawrl.interfaces.SlashCommandInterface
+import dev.kawrl.interfaces.CommandHandler
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
-import org.slf4j.LoggerFactory
 
-private val logger: org.slf4j.Logger = LoggerFactory.getLogger(PingCommand::class.java)
-
-class PingCommand : SlashCommandInterface {
+class PingCommand : CommandHandler(), CommandHandler.SlashCommandInterface {
     override fun execute(event: SlashCommandInteractionEvent) {
         val ping = event.jda.gatewayPing
         event.reply("Pong! 🏓 ($ping ms)").queue()
