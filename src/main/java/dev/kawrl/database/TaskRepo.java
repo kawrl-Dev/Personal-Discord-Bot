@@ -1,8 +1,5 @@
 package dev.kawrl.database;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.sql.*;
 
 /**
@@ -10,8 +7,6 @@ import java.sql.*;
  * Each method opens and closes its own connection via try-with-resources.
  */
 public class TaskRepo {
-    private static final Logger log = LoggerFactory.getLogger(TaskRepo.class);
-
     // -------------------------------------------------------------------------
     //  Users
     // -------------------------------------------------------------------------
