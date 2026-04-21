@@ -1,6 +1,8 @@
 package dev.kawrl.database;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * All SQL queries for tasks and task lists live here.
@@ -62,6 +64,23 @@ public class TaskRepo {
             try (ResultSet keys = ps.getGeneratedKeys()) {
                 if (keys.next()) return keys.getLong(1);
                 throw new SQLException("No generated key returned for new task list.");
+            }
+        }
+    }
+
+    public static List<String> getListNamesForUser(String userID) throws SQLException{
+        String sql = "SELECT list_name from task_lists WHERE user_id = ?";
+        try (Connection conn = DatabaseManager.getConnection()){
+            PreparedStatement preparedStatement = conn.prepareStatement(sql);{
+                preparedStatement.setString(1,userID);
+                try (ResultSet result = preparedStatement.executeQuery()){
+                    List<String> stringList = new ArrayList<>();
+                    while (result.next()){
+                        stringList.add(result.getString("list_name"));
+                    }
+
+                    return stringList;
+                }
             }
         }
     }
