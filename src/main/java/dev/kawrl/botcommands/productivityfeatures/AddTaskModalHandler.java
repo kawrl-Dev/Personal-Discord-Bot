@@ -15,63 +15,63 @@ import java.util.Set;
 public class AddTaskModalHandler extends CommandHandler implements CommandHandler.ModalInterface {
     private static final Set<String> validPriorities = Set.of("LOW", "MEDIUM", "HIGH");
     private static final Set<String> validStatuses   = Set.of("PENDING", "FINISHED");
+
     @Override
     public void execute(ModalInteractionEvent event) {
-        String list_ID = event.getModalId().split(":")[1];
+        String list_ID = event.getModalId().split(":")[1].trim();
 
-        ModalMapping taskTextMapping = event.getValue("task_string"),
-                priorityMapping = event.getValue("priority-level"),
-                taskStatusMapping = event.getValue("task-status"),
-                deadlineMapping = event.getValue("deadline");
+        ModalMapping taskTextMapping    = event.getValue("task_string"),
+                priorityMapping    = event.getValue("priority-level"),
+                taskStatusMapping  = event.getValue("task-status"),
+                deadlineMapping    = event.getValue("deadline");
 
-        if ( taskTextMapping == null|| priorityMapping == null || taskStatusMapping == null) return;
+        if (taskTextMapping == null || priorityMapping == null || taskStatusMapping == null) return;
 
-        String taskString = taskTextMapping.getAsString(),
-                priorityLVL = priorityMapping.getAsString().toUpperCase(),
-                taskStatus = taskStatusMapping.getAsString().toUpperCase();
+        String taskString  = taskTextMapping.getAsString();
+        String priorityLVL = priorityMapping.getAsString().toUpperCase();
+        String taskStatus  = taskStatusMapping.getAsString().toUpperCase();
 
-        if (!validPriorities.contains(priorityLVL)){
-            replyWithRetry(event,list_ID,"Invalid priority! Please enter LOW, MEDIUM, or HIGH.");
+        if (!validPriorities.contains(priorityLVL)) {
+            replyWithRetry(event, list_ID, "Invalid priority! Please enter LOW, MEDIUM, or HIGH.");
             return;
         }
 
-        if (!validStatuses.contains(taskStatus)){
-            replyWithRetry(event,list_ID,"Invalid status! Please enter PENDING or FINISHED.");
+        if (!validStatuses.contains(taskStatus)) {
+            replyWithRetry(event, list_ID, "Invalid status! Please enter PENDING or FINISHED.");
             return;
         }
 
-        Date deadline;
-
-        if (deadlineMapping != null && !deadlineMapping.getAsString().isBlank()){
+        Date deadline = null;
+        if (deadlineMapping != null && !deadlineMapping.getAsString().isBlank()) {
             try {
                 LocalDate parsed = LocalDate.parse(
                         deadlineMapping.getAsString(),
-                        DateTimeFormatter.ofPattern("yyyy/MM/dd")
+                        DateTimeFormatter.ofPattern("yyyy/M/d")
                 );
-                deadline = java.sql.Date.valueOf(parsed);
+                deadline = Date.valueOf(parsed);
             } catch (Exception e) {
-                replyWithRetry(event,list_ID, "Invalid date format! Please use yyyy/MM/dd.");
+                replyWithRetry(event, list_ID, "Invalid date format! Please use yyyy/MM/dd.");
                 return;
             }
+        }
 
-            try {
-                long taskID = TaskRepo.addTask(Long.parseLong(list_ID),taskString,priorityLVL,deadline);
-                logger.info("Task #{} added to the list #{} by {}",taskID,list_ID,event.getUser().getName());
-                event.reply(String.format("Task added! (**%s** | %s | %s)",taskString,priorityLVL,taskStatus))
-                        .setEphemeral(true)
-                        .queue();
-            } catch (Exception e) {
-                logger.error("Database error while adding task for user '{}': {}", event.getUser().getName(), e.toString());
-                event.reply("A database error occurred. Please try again later.")
-                        .setEphemeral(true)
-                        .queue();
-            }
+        try {
+            long taskID = TaskRepo.addTask(Long.parseLong(list_ID), taskString, priorityLVL, deadline);
+            logger.info("Task #{} added to list #{} by {}", taskID, list_ID, event.getUser().getName());
+            event.reply(String.format("Task added! (**%s** | %s | %s)", taskString, priorityLVL, taskStatus))
+                    .setEphemeral(true)
+                    .queue();
+        } catch (Exception e) {
+            logger.error("Database error while adding task for user '{}': {}", event.getUser().getName(), e.toString());
+            event.reply("A database error occurred. Please try again later.")
+                    .setEphemeral(true)
+                    .queue();
         }
     }
 
-    private void replyWithRetry(ModalInteractionEvent event, String listID, String errorMsg){
+    private void replyWithRetry(ModalInteractionEvent event, String listID, String errorMsg) {
         event.reply("❌ " + errorMsg)
-                .addComponents(ActionRow.of(Button.primary("retry-add-task:"+ listID,"Try Again")))
+                .addComponents(ActionRow.of(Button.primary("retry-add-task:" + listID, "Try Again")))
                 .setEphemeral(true)
                 .queue();
     }

@@ -3,7 +3,6 @@ package dev.kawrl.botcommands.productivityfeatures;
 import dev.kawrl.database.TaskRepo;
 import dev.kawrl.interfaces.CommandHandler;
 import net.dv8tion.jda.api.components.actionrow.ActionRow;
-import net.dv8tion.jda.api.components.actionrow.ActionRowChildComponent;
 import net.dv8tion.jda.api.components.selections.StringSelectMenu;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -46,7 +45,8 @@ public class AddTaskCommand extends CommandHandler implements CommandHandler.Sla
             lists.forEach((list_name,list_id) -> menuBuilder.addOption(list_name,String.valueOf(list_id)));
 
             event.reply("Which list would you like to add a task to?")
-                    .addComponents(ActionRow.of((ActionRowChildComponent) menuBuilder.build()))
+                    .addComponents(ActionRow.of(menuBuilder.build()))
+                    .setEphemeral(true)
                     .queue();
 
 
