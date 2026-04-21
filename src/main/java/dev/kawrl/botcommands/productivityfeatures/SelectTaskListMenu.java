@@ -10,30 +10,44 @@ import net.dv8tion.jda.api.modals.Modal;
 public class SelectTaskListMenu implements CommandHandler.StringSelectMenuInterface {
     @Override
     public void handle(StringSelectInteractionEvent event) {
-        String componentId = event.getComponentId();
-
-        if (!componentId.startsWith("select-list:")) return;
-
-        // Scope check — only the user who invoked /add-task can use this menu
-        String expectedUserId = componentId.split(":")[1];
-        if (!event.getUser().getId().equals(expectedUserId)) {
-            event.reply("This menu isn't for you!").setEphemeral(true).queue();
-            return;
-        }
-
         String listId = event.getValues().getFirst();
 
-        TextInput taskInput = TextInput.create("task-text", TextInputStyle.SHORT)
-                .setPlaceholder("Enter your task here...")
+        TextInput task_text = TextInput.create("task_string", TextInputStyle.SHORT)
+                .setPlaceholder("e.g., Touching grass")
+                .setMaxLength(512)
                 .setRequired(true)
                 .build();
 
-        Modal modal = Modal.create("add-task:" + listId,"Create Task")
+        TextInput priorityLevel = TextInput.create("priority-level",TextInputStyle.SHORT)
+                .setPlaceholder("LOW / MEDIUM / HIGH")
+                .setMinLength(3)
+                .setMaxLength(6)
+                .setRequired(true)
+                .build();
+
+        TextInput taskStatus = TextInput.create("task-status",TextInputStyle.SHORT)
+                .setPlaceholder("PENDING / FINISHED")
+                .setMinLength(7)
+                .setMaxLength(8)
+                .setRequired(true)
+                .build();
+
+        TextInput deadline = TextInput.create("deadline",TextInputStyle.SHORT)
+                .setPlaceholder("yyyy/MM/dd")
+                .setMinLength(10)
+                .setMaxLength(10)
+                .setRequired(false)
+                .build();
+
+        Modal addTaskModal = Modal.create("add-task-modal: "+ listId,"Add Task to List")
                 .addComponents(
-                        Label.of("Task",taskInput)
+                        Label.of("Task",task_text),
+                        Label.of("Priority Level", priorityLevel),
+                        Label.of("Task Status", taskStatus),
+                        Label.of("Deadline",deadline)
                 )
                 .build();
 
-        event.replyModal(modal).queue();
+        event.replyModal(addTaskModal).queue();
     }
 }

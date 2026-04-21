@@ -2,6 +2,7 @@ package dev.kawrl;
 
 import dev.kawrl.botcommands.PingCommand;
 import dev.kawrl.botcommands.ShutdownCommand;
+import dev.kawrl.botcommands.productivityfeatures.AddTaskModalHandler;
 import dev.kawrl.botcommands.productivityfeatures.CreateNewTaskListCommand;
 import dev.kawrl.botcommands.productivityfeatures.SelectTaskListMenu;
 import dev.kawrl.interfaces.CommandHandler;
@@ -28,6 +29,7 @@ public class Listeners extends ListenerAdapter {
         * Modal Interactions & String Select Menus
         * - None for now TODO[Update it if there are new modal/menu interactions]
         * */
+        modalHandlers.put("add-task-modal:", new AddTaskModalHandler());
 
         // Menu Select
         menuSelectHandlers.put("select-list",new SelectTaskListMenu());
@@ -46,7 +48,12 @@ public class Listeners extends ListenerAdapter {
 
     @Override
     public void onModalInteraction(ModalInteractionEvent event) {
-        CommandHandler.ModalInterface handler = modalHandlers.get(event.getModalId());
+        String modalId = event.getModalId();
+        CommandHandler.ModalInterface handler = modalHandlers.entrySet().stream()
+                .filter(entry -> modalId.startsWith(entry.getKey()))
+                .map(Map.Entry::getValue)
+                .findFirst()
+                .orElse(null);
         if (handler != null) try {
             handler.execute(event);
         } catch (Exception e) {

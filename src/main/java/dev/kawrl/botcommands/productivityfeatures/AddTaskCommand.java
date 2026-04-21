@@ -18,7 +18,17 @@ public class AddTaskCommand extends CommandHandler implements CommandHandler.Sla
 
         if (member == null) return;
 
-        // Process of Add Task Command below
+        /*
+         * CREATE/ADD TASK COMMAND STEPS
+         *       1. Select task lists that the user owns from the database
+         *       2. Dropdown menu of lists that the user made
+         *       3. Make user input their task in the modal
+         *               - Task text/description
+         *               - Dropdown menu of Priority Level (Low, Medium, High)
+         *               - Dropdown menu of Task Status (Not Done, In Progress, Done)
+         *               - Deadline (Optional?????)
+         *       4. Pass the data into the MySQL database
+         */
 
         String username = member.getUser().getName();
 
@@ -36,7 +46,7 @@ public class AddTaskCommand extends CommandHandler implements CommandHandler.Sla
             lists.forEach((list_name,list_id) -> menuBuilder.addOption(list_name,String.valueOf(list_id)));
 
             event.reply("Which list would you like to add a task to?")
-                    .addComponents(ActionRow.of((ActionRowChildComponent) menuBuilder))
+                    .addComponents(ActionRow.of((ActionRowChildComponent) menuBuilder.build()))
                     .queue();
 
 
