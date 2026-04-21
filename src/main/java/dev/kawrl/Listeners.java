@@ -4,10 +4,12 @@ import dev.kawrl.botcommands.PingCommand;
 import dev.kawrl.botcommands.ShutdownCommand;
 import dev.kawrl.botcommands.productivityfeatures.AddTaskModalHandler;
 import dev.kawrl.botcommands.productivityfeatures.CreateNewTaskListCommand;
-import dev.kawrl.botcommands.productivityfeatures.SelectTaskListMenu;
+import dev.kawrl.botcommands.productivityfeatures.RetryAddTaskButton;
+import dev.kawrl.botcommands.productivityfeatures.CreateTaskModal;
 import dev.kawrl.interfaces.CommandHandler;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -18,6 +20,7 @@ public class Listeners extends ListenerAdapter {
     private final Map<String, CommandHandler.SlashCommandInterface> slashCommands = new HashMap<>();
     private final Map<String, CommandHandler.ModalInterface> modalHandlers = new HashMap<>();
     private final Map<String, CommandHandler.StringSelectMenuInterface> menuSelectHandlers = new HashMap<>();
+    private final Map<String, CommandHandler.ButtonInterface> buttonHandlers = new HashMap<>();
 
     public Listeners() {
         // Slash Commands
@@ -25,14 +28,14 @@ public class Listeners extends ListenerAdapter {
         slashCommands.put("shutdown", new ShutdownCommand());
         slashCommands.put("create-list", new CreateNewTaskListCommand());
 
-        /*
-        * Modal Interactions & String Select Menus
-        * - None for now TODO[Update it if there are new modal/menu interactions]
-        * */
+        // Modal Handlers
         modalHandlers.put("add-task-modal:", new AddTaskModalHandler());
 
-        // Menu Select
-        menuSelectHandlers.put("select-list",new SelectTaskListMenu());
+        // Menu Select Handlers
+        menuSelectHandlers.put("select-list",new CreateTaskModal());
+
+        // Button Handlers
+        buttonHandlers.put("retry-add-task: ", new RetryAddTaskButton());
     }
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
@@ -66,6 +69,24 @@ public class Listeners extends ListenerAdapter {
     @Override
     public void onStringSelectInteraction(StringSelectInteractionEvent event) {
         CommandHandler.StringSelectMenuInterface handler = menuSelectHandlers.get(event.getComponentId());
+        if (handler != null) try {
+            handler.handle(event);
+        } catch (Exception e) {
+            event.reply("Something went wrong!")
+                    .setEphemeral(true)
+                    .queue();
+        }
+    }
+
+    @Override
+    public void onButtonInteraction(ButtonInteractionEvent event) {
+        String buttonId = event.getComponentId();
+        CommandHandler.ButtonInterface handler = buttonHandlers.entrySet().stream()
+                .filter(entry -> buttonId.startsWith(entry.getKey()))
+                .map(Map.Entry::getValue)
+                .findFirst()
+                .orElse(null);
+
         if (handler != null) try {
             handler.handle(event);
         } catch (Exception e) {

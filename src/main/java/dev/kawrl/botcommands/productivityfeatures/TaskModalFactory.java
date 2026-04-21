@@ -1,17 +1,12 @@
 package dev.kawrl.botcommands.productivityfeatures;
 
-import dev.kawrl.interfaces.CommandHandler;
 import net.dv8tion.jda.api.components.label.Label;
 import net.dv8tion.jda.api.components.textinput.TextInput;
 import net.dv8tion.jda.api.components.textinput.TextInputStyle;
-import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.modals.Modal;
 
-public class SelectTaskListMenu implements CommandHandler.StringSelectMenuInterface {
-    @Override
-    public void handle(StringSelectInteractionEvent event) {
-        String listId = event.getValues().getFirst();
-
+public class TaskModalFactory {
+    public static Modal buildAddTaskModal(String listId) {
         TextInput task_text = TextInput.create("task_string", TextInputStyle.SHORT)
                 .setPlaceholder("e.g., Touching grass")
                 .setMaxLength(512)
@@ -39,15 +34,13 @@ public class SelectTaskListMenu implements CommandHandler.StringSelectMenuInterf
                 .setRequired(false)
                 .build();
 
-        Modal addTaskModal = Modal.create("add-task-modal: "+ listId,"Add Task to List")
+        return Modal.create("add-task-modal: "+ listId,"Add Task to List")
                 .addComponents(
                         Label.of("Task",task_text),
                         Label.of("Priority Level", priorityLevel),
                         Label.of("Task Status", taskStatus),
                         Label.of("Deadline",deadline)
                 )
-                .build();
-
-        event.replyModal(addTaskModal).queue();
+            .build();
     }
 }
