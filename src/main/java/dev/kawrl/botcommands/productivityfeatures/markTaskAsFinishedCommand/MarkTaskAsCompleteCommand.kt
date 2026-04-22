@@ -1,4 +1,4 @@
-package dev.kawrl.botcommands.productivityfeatures
+package dev.kawrl.botcommands.productivityfeatures.markTaskAsFinishedCommand
 
 import dev.kawrl.interfaces.CommandHandler
 import dev.kawrl.interfaces.CommandHandler.SlashCommandInterface
