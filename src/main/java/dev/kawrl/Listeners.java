@@ -2,11 +2,7 @@ package dev.kawrl;
 
 import dev.kawrl.botcommands.PingCommand;
 import dev.kawrl.botcommands.ShutdownCommand;
-import dev.kawrl.botcommands.productivityfeatures.AddTaskCommand;
-import dev.kawrl.botcommands.productivityfeatures.AddTaskModalHandler;
-import dev.kawrl.botcommands.productivityfeatures.CreateNewTaskListCommand;
-import dev.kawrl.botcommands.productivityfeatures.RetryAddTaskButton;
-import dev.kawrl.botcommands.productivityfeatures.CreateTaskModal;
+import dev.kawrl.botcommands.productivityfeatures.*;
 import dev.kawrl.interfaces.CommandHandler;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -32,12 +28,14 @@ public class Listeners extends ListenerAdapter {
         slashCommands.put("shutdown", new ShutdownCommand());
         slashCommands.put("create-list", new CreateNewTaskListCommand());
         slashCommands.put("add-task", new AddTaskCommand());
+        slashCommands.put("mark-task", new MarkTasksAsCompleteCommand());
 
         // Modal Handlers
         modalHandlers.put("add-task-modal:", new AddTaskModalHandler());
 
         // Menu Select Handlers
-        menuSelectHandlers.put("select-list", new CreateTaskModal());
+        menuSelectHandlers.put("select-list:add-task", new CreateTaskModal());
+        menuSelectHandlers.put("select-list:mark-task", new MarkSelectedTaskFactory());
 
         //Button Handlers
         buttonHandlers.put("retry-add-task:", new RetryAddTaskButton());
@@ -76,7 +74,12 @@ public class Listeners extends ListenerAdapter {
 
     @Override
     public void onStringSelectInteraction(StringSelectInteractionEvent event) {
-        CommandHandler.StringSelectMenuInterface handler = menuSelectHandlers.get(event.getComponentId());
+        String menuID = event.getComponentId();
+        CommandHandler.StringSelectMenuInterface handler = menuSelectHandlers.entrySet().stream()
+                .filter(entry -> menuID.startsWith(entry.getKey()))
+                .map(Map.Entry::getValue)
+                .findFirst()
+                .orElse(null);
         if (handler != null) try {
             handler.handle(event);
         } catch (Exception e) {
