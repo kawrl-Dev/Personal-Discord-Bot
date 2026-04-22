@@ -87,6 +87,33 @@ public class TaskRepo {
     // -------------------------------------------------------------------------
     //  Tasks
     // -------------------------------------------------------------------------
+    public static Map<String, Long> getTasksFromTaskListForUser(String listID, String userID) throws SQLException{
+        String sql = """
+                SELECT
+                	t.task_id,
+                    t.task_text
+                FROM tasks t
+                JOIN task_lists tList
+                	ON t.list_id = tList.list_id
+                WHERE tList.user_id = ?
+                AND tList.list_id = ?;
+                """;
+        try (Connection conn = DatabaseManager.getConnection()){
+            PreparedStatement preparedStatement = conn.prepareStatement(sql);{
+                preparedStatement.setString(1,userID);
+                preparedStatement.setString(2,listID);
+
+                try (ResultSet resultSet = preparedStatement.executeQuery(sql)){
+                    Map<String,Long> lists = new LinkedHashMap<>();
+                    while (resultSet.next()){
+                        lists.put(resultSet.getString("task_text"), resultSet.getLong("task_id"));
+                    }
+
+                    return lists;
+                }
+            }
+        }
+    }
 
     /**
      * Adds a task to an existing list.
