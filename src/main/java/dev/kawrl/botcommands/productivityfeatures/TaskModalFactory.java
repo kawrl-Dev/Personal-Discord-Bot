@@ -20,13 +20,6 @@ public class TaskModalFactory {
                 .setRequired(true)
                 .build();
 
-        TextInput taskStatus = TextInput.create("task-status", TextInputStyle.SHORT)
-                .setPlaceholder("PENDING / FINISHED")
-                .setMinLength(7)
-                .setMaxLength(8)
-                .setRequired(true)
-                .build();
-
         TextInput deadline = TextInput.create("deadline", TextInputStyle.SHORT)
                 .setPlaceholder("yyyy/MM/dd")
                 .setMinLength(9)
@@ -38,7 +31,6 @@ public class TaskModalFactory {
                 .addComponents(
                         Label.of("Task",taskText),
                         Label.of("Priority Level",priorityLevel),
-                        Label.of("Task Status",taskStatus),
                         Label.of("Deadline",deadline)
                 )
                 .build();
