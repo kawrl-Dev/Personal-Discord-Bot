@@ -9,7 +9,6 @@ import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent
 import java.sql.Date
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.util.*
 
 class AddTaskModalHandler : CommandHandler(), ModalInterface {
     override fun execute(event: ModalInteractionEvent) {
@@ -23,12 +22,7 @@ class AddTaskModalHandler : CommandHandler(), ModalInterface {
         if (taskTextMapping == null || priorityMapping == null) return
 
         val taskString = taskTextMapping.asString
-        val priorityLVL = priorityMapping.asString.uppercase(Locale.getDefault())
-
-        if (!validPriorities.contains(priorityLVL)) {
-            replyWithRetry(event, listId, "Invalid priority! Please enter LOW, MEDIUM, or HIGH.")
-            return
-        }
+        val priorityLVL = priorityMapping.asString
 
         var deadline: Date? = null
         if (deadlineMapping != null && !deadlineMapping.asString.isBlank()) {
@@ -39,7 +33,10 @@ class AddTaskModalHandler : CommandHandler(), ModalInterface {
                 )
                 deadline = Date.valueOf(parsed)
             } catch (_: Exception) {
-                replyWithRetry(event, listId, "Invalid date format! Please use yyyy/MM/dd.")
+                event.reply("❌ Invalid date format! Please use yyyy/MM/dd.")
+                    .addComponents(ActionRow.of(Button.primary("retry-add-task:$listId", "Try Again")))
+                    .setEphemeral(true)
+                    .queue()
                 return
             }
         }
@@ -56,16 +53,5 @@ class AddTaskModalHandler : CommandHandler(), ModalInterface {
                 .setEphemeral(true)
                 .queue()
         }
-    }
-
-    private fun replyWithRetry(event: ModalInteractionEvent, listID: String?, errorMsg: String?) {
-        event.reply("❌ $errorMsg")
-            .addComponents(ActionRow.of(Button.primary("retry-add-task:$listID", "Try Again")))
-            .setEphemeral(true)
-            .queue()
-    }
-
-    companion object {
-        private val validPriorities = mutableSetOf<String?>("LOW", "MEDIUM", "HIGH")
     }
 }

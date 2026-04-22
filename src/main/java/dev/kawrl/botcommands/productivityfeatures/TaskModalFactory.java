@@ -1,6 +1,7 @@
 package dev.kawrl.botcommands.productivityfeatures;
 
 import net.dv8tion.jda.api.components.label.Label;
+import net.dv8tion.jda.api.components.radiogroup.RadioGroup;
 import net.dv8tion.jda.api.components.textinput.TextInput;
 import net.dv8tion.jda.api.components.textinput.TextInputStyle;
 import net.dv8tion.jda.api.modals.Modal;
@@ -13,10 +14,10 @@ public class TaskModalFactory {
                 .setRequired(true)
                 .build();
 
-        TextInput priorityLevel = TextInput.create("priority-level", TextInputStyle.SHORT)
-                .setPlaceholder("LOW / MEDIUM / HIGH")
-                .setMinLength(3)
-                .setMaxLength(6)
+        RadioGroup priorityLevel = RadioGroup.create("priority-level")
+                .addOption("Low","LOW")
+                .addOption("Medium","MEDIUM")
+                .addOption("High","HIGH")
                 .setRequired(true)
                 .build();
 
