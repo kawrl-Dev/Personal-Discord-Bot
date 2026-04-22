@@ -1,4 +1,4 @@
-package dev.kawrl.botcommands.productivityfeatures;
+package dev.kawrl.botcommands.productivityfeatures.addTaskToListCommand;
 
 import net.dv8tion.jda.api.components.label.Label;
 import net.dv8tion.jda.api.components.radiogroup.RadioGroup;

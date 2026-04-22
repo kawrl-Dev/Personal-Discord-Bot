@@ -1,4 +1,4 @@
-package dev.kawrl.botcommands.productivityfeatures;
+package dev.kawrl.botcommands.productivityfeatures.addTaskToListCommand;
 
 import dev.kawrl.interfaces.CommandHandler;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
