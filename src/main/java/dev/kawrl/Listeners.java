@@ -3,6 +3,13 @@ package dev.kawrl;
 import dev.kawrl.botcommands.PingCommand;
 import dev.kawrl.botcommands.ShutdownCommand;
 import dev.kawrl.botcommands.productivityfeatures.*;
+import dev.kawrl.botcommands.productivityfeatures.addTaskToListCommand.AddTaskCommand;
+import dev.kawrl.botcommands.productivityfeatures.addTaskToListCommand.AddTaskModalHandler;
+import dev.kawrl.botcommands.productivityfeatures.addTaskToListCommand.CreateTaskModal;
+import dev.kawrl.botcommands.productivityfeatures.addTaskToListCommand.RetryAddTaskButton;
+import dev.kawrl.botcommands.productivityfeatures.markTaskAsFinishedCommand.MarkSelectedTaskButtonPrompt;
+import dev.kawrl.botcommands.productivityfeatures.markTaskAsFinishedCommand.MarkSelectedTaskFactory;
+import dev.kawrl.botcommands.productivityfeatures.markTaskAsFinishedCommand.MarkTasksAsCompleteCommand;
 import dev.kawrl.interfaces.CommandHandler;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -39,6 +46,7 @@ public class Listeners extends ListenerAdapter {
 
         //Button Handlers
         buttonHandlers.put("retry-add-task:", new RetryAddTaskButton());
+        buttonHandlers.put("select-task", new MarkSelectedTaskButtonPrompt());
     }
 
     @Override
