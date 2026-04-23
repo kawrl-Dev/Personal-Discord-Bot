@@ -7,9 +7,7 @@ import dev.kawrl.botcommands.productivityfeatures.addTaskToListCommand.AddTaskCo
 import dev.kawrl.botcommands.productivityfeatures.addTaskToListCommand.AddTaskModalHandler;
 import dev.kawrl.botcommands.productivityfeatures.addTaskToListCommand.CreateTaskModal;
 import dev.kawrl.botcommands.productivityfeatures.addTaskToListCommand.RetryAddTaskButton;
-import dev.kawrl.botcommands.productivityfeatures.markTaskAsFinishedCommand.MarkSelectedTaskButtonPrompt;
-import dev.kawrl.botcommands.productivityfeatures.markTaskAsFinishedCommand.MarkSelectedTaskFactory;
-import dev.kawrl.botcommands.productivityfeatures.markTaskAsFinishedCommand.MarkTasksAsCompleteCommand;
+import dev.kawrl.botcommands.productivityfeatures.markTaskAsFinishedCommand.*;
 import dev.kawrl.interfaces.CommandHandler;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -37,16 +35,20 @@ public class Listeners extends ListenerAdapter {
         slashCommands.put("add-task", new AddTaskCommand());
         slashCommands.put("mark-task", new MarkTasksAsCompleteCommand());
 
+        // Menu Select Handlers
+        menuSelectHandlers.put("select-list:add-task", new CreateTaskModal());
+
+        menuSelectHandlers.put("select-list:mark-task", new MarkSelectedTaskFactory());
+        menuSelectHandlers.put("approve-selected-tasks:", new ApproveSelectedTasksPrompt());
+
         // Modal Handlers
         modalHandlers.put("add-task-modal:", new AddTaskModalHandler());
 
-        // Menu Select Handlers
-        menuSelectHandlers.put("select-list:add-task", new CreateTaskModal());
-        menuSelectHandlers.put("select-list:mark-task", new MarkSelectedTaskFactory());
-
         //Button Handlers
         buttonHandlers.put("retry-add-task:", new RetryAddTaskButton());
-        buttonHandlers.put("select-task", new MarkSelectedTaskButtonPrompt());
+
+        buttonHandlers.put("yes-response:", new ConfirmMarkedTasks());
+        buttonHandlers.put("no-response", new CancelMarkTasks());
     }
 
     @Override
