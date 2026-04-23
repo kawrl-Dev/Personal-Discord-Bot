@@ -158,20 +158,6 @@ public class TaskRepo {
     }
 
     /**
-     * Deletes a task by its ID.
-     *
-     * @return true if a row was deleted.
-     */
-    public static boolean deleteTask(long taskId) throws SQLException {
-        String sql = "DELETE FROM tasks WHERE task_id = ?";
-        try (Connection conn = DatabaseManager.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setLong(1, taskId);
-            return ps.executeUpdate() > 0;
-        }
-    }
-
-    /**
      * Prints all tasks in a list to a formatted string for Discord reply.
      * Returns an empty-list message if no tasks exist.
      */
