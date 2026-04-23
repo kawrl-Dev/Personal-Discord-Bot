@@ -98,19 +98,16 @@ public class TaskRepo {
                 WHERE tList.user_id = ?
                 AND tList.list_id = ?;
                 """;
-        try (Connection conn = DatabaseManager.getConnection()){
-            PreparedStatement preparedStatement = conn.prepareStatement(sql);{
-                preparedStatement.setString(1,userID);
-                preparedStatement.setString(2,listID);
-
-                try (ResultSet resultSet = preparedStatement.executeQuery(sql)){
-                    Map<String,Long> lists = new LinkedHashMap<>();
-                    while (resultSet.next()){
-                        lists.put(resultSet.getString("task_text"), resultSet.getLong("task_id"));
-                    }
-
-                    return lists;
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, userID);
+            ps.setString(2, listID);
+            try (ResultSet rs = ps.executeQuery()) {
+                Map<String, Long> tasks = new LinkedHashMap<>();
+                while (rs.next()) {
+                    tasks.put(rs.getString("task_text"), rs.getLong("task_id"));
                 }
+                return tasks;
             }
         }
     }
