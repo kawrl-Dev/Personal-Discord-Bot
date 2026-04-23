@@ -1,12 +1,11 @@
-package dev.kawrl.botcommands.productivityfeatures
+package dev.kawrl.botcommands.productivityfeatures.taskcreation
 
 import dev.kawrl.database.TaskRepo
 import dev.kawrl.interfaces.CommandHandler
-import dev.kawrl.interfaces.CommandHandler.SlashCommandInterface
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 import java.sql.SQLException
 
-class CreateNewTaskListCommand : CommandHandler(), SlashCommandInterface {
+class CreateListCommand : CommandHandler(), CommandHandler.SlashCommandInterface {
     override fun execute(event: SlashCommandInteractionEvent) {
         val member = event.member
         val option = event.getOption("list-name")
