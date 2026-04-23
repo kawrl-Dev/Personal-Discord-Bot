@@ -4,6 +4,8 @@ import dev.kawrl.botcommands.PingCommand;
 import dev.kawrl.botcommands.ShutdownCommand;
 import dev.kawrl.botcommands.productivityfeatures.taskcreation.*;
 import dev.kawrl.botcommands.productivityfeatures.taskcompletion.*;
+import dev.kawrl.botcommands.productivityfeatures.taskdisplay.ViewListCommand;
+import dev.kawrl.botcommands.productivityfeatures.taskdisplay.ViewListHandler;
 import dev.kawrl.interfaces.CommandHandler;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -30,11 +32,13 @@ public class Listeners extends ListenerAdapter {
         slashCommands.put("create-list", new CreateListCommand());
         slashCommands.put("add-task", new AddTaskCommand());
         slashCommands.put("mark-task", new MarkTaskCommand());
+        slashCommands.put("view-list", new ViewListCommand());
 
         // Menu Select Handlers
         menuSelectHandlers.put("select-list:add-task", new AddTaskMenuHandler());
 
         menuSelectHandlers.put("select-list:mark-task", new TaskSelectionHandler());
+        menuSelectHandlers.put("select-list:view-list", new ViewListHandler());
         menuSelectHandlers.put("approve-selected-tasks:", new MarkTaskConfirmation());
 
         // Modal Handlers
