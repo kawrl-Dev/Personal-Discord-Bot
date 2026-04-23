@@ -95,8 +95,9 @@ public class TaskRepo {
                 FROM tasks t
                 JOIN task_lists tList
                 	ON t.list_id = tList.list_id
-                WHERE tList.user_id = ?
-                AND tList.list_id = ?;
+                    WHERE tList.user_id = ?
+                    AND tList.list_id = ?
+                    AND NOT t.task_status = 'FINISHED';
                 """;
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
