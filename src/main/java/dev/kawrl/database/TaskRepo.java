@@ -68,18 +68,17 @@ public class TaskRepo {
         }
     }
 
-    public static Map<String, Long> getListNamesForUser(String userID) throws SQLException{
-        String sql = "SELECT list_id, list_name from task_lists WHERE user_id = ?";
-        try (Connection conn = DatabaseManager.getConnection()){
-            PreparedStatement preparedStatement = conn.prepareStatement(sql);{
-                preparedStatement.setString(1,userID);
-                try (ResultSet result = preparedStatement.executeQuery()){
-                    Map<String, Long> lists = new LinkedHashMap<>();
-                    while (result.next()) {
-                        lists.put(result.getString("list_name"), result.getLong("list_id"));
-                    }
-                    return lists;
+    public static Map<String, Long> getListNamesForUser(String userID) throws SQLException {
+        String sql = "SELECT list_id, list_name FROM task_lists WHERE user_id = ?";
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, userID);
+            try (ResultSet rs = ps.executeQuery()) {
+                Map<String, Long> lists = new LinkedHashMap<>();
+                while (rs.next()) {
+                    lists.put(rs.getString("list_name"), rs.getLong("list_id"));
                 }
+                return lists;
             }
         }
     }
