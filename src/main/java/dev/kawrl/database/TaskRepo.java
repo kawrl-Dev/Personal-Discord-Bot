@@ -163,11 +163,16 @@ public class TaskRepo {
      */
     public static String formatTaskList(long listId, String listName) throws SQLException {
         String sql = """
-                SELECT task_id, task_text, priority, is_completed, due_date
-                FROM tasks
-                WHERE list_id = ?
-                ORDER BY task_id ASC
-                """;
+            SELECT
+                task_id,
+                task_text,
+                priority,
+                task_status,
+                due_date
+            FROM tasks
+            WHERE list_id = ?
+            ORDER BY task_id ASC;
+            """;
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setLong(1, listId);
@@ -177,7 +182,7 @@ public class TaskRepo {
                 int count = 0;
                 while (rs.next()) {
                     count++;
-                    boolean done = rs.getBoolean("is_completed");
+                    boolean done = rs.getString("task_status").equals("FINISHED"); // fix 1
                     String check = done ? "✅" : "⬜";
                     String due = rs.getDate("due_date") != null
                             ? " *(due: " + rs.getDate("due_date") + ")*"
