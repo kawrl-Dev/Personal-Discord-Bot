@@ -7,8 +7,7 @@ import java.sql.SQLException
 
 class MarkTaskCommand : CommandHandler(), SlashCommandInterface {
     override fun execute(event: SlashCommandInteractionEvent) {
-        val member = event.member
-        if (member == null) return
+        val member = event.member ?: return
         val username = member.user.name
 
         try {
