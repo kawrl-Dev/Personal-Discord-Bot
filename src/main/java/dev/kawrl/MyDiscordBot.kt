@@ -47,8 +47,9 @@ object MyDiscordBot {
                     Commands.slash("shutdown", "Shuts down the Discord Bot."),
                     Commands.slash("create-list", "Creates a new task list")
                         .addOption(OptionType.STRING, "list-name", "Name of the task list", true),
+                    Commands.slash("view-list","View all tasks in a list"),
                     Commands.slash("add-task","Create a task"),
-                    Commands.slash("mark-task","Mark task/tasks as finished")
+                    Commands.slash("mark-task","Mark task/tasks as finished"),
                 ).queue()
                 log.info("Commands registered!")
             }
