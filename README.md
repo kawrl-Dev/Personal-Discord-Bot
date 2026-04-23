@@ -31,10 +31,10 @@ This passion project showcases a lightweight Discord bot built with Java and Kot
 4. **Run the bot**
    ```bash
    # Normal startup
-   java -jar build/libs/MyDiscordBotProject-v1.0.3.jar
+   java -jar build/libs/MyDiscordBotProject-v1.0.4.jar
 
    # Register slash commands (only needed once, or after adding new commands)
-   java -jar build/libs/MyDiscordBotProject-v1.0.3.jar --register
+   java -jar build/libs/MyDiscordBotProject-v1.0.4.jar --register
    ```
 
 ---
@@ -101,13 +101,14 @@ CREATE TABLE tasks (
 
 ## Usage / Commands
 
-| Command        | Description                                                                                                                                                                    | Restricted       |
-|----------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------|
-| `/ping`        | Checks if the bot is alive, returns gateway latency<br/><br/> ![1_PingCommand.png](images/1_PingCommand.png)                                                                   | No               |
-| `/shutdown`    | Gracefully shuts down the bot <br/><br/> ![2_Create-List_0.png](images/2_Create-List_0.png) <br/> ![2_Create-List_1.png](images/2_Create-List_1.png)                           | Yes — owner only |
-| `/create-list` | Creates a new personal task list <br/><br/> ![3_AddTaskToList_0.png](images/3_AddTaskToList_0.png) <br/> ![3_AddTaskToList_1.png](images/3_AddTaskToList_1.png)                | No               |
-| `/add-task`    | Opens a dropdown of your lists, then a modal to fill in task details <br/><br/> ![4_MarkTask_0.png](images/4_MarkTask_0.png)<br/> ![4_MarkTask_1.png](images/4_MarkTask_1.png) | No               |
-| `/mark-task`   | Opens a dropdown of your lists, then lets you select tasks to mark as finished <br/><br/> ![5_ShutdownCommand.png](images/5_ShutdownCommand.png)                               | No               |
+| Command        | Description                                                                                                                                                                                          | Restricted       |
+|----------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------|
+| `/ping`        | Checks if the bot is alive, returns gateway latency<br/><br/> ![1_PingCommand.png](images/1_PingCommand.png)                                                                                         | No               |
+| `/shutdown`    | Gracefully shuts down the bot <br/><br/> ![5_ShutdownCommand.png](images/5_ShutdownCommand.png)                                                                                                      | Yes — owner only |
+| `/create-list` | Creates a new personal task list <br/><br/> ![2_Create-List_0.png](images/2_Create-List_0.png) <br/> ![2_Create-List_1.png](images/2_Create-List_1.png)                                              | No               |
+| `/add-task`    | Opens a dropdown of your lists, then a modal to fill in task details <br/><br/>  ![3_AddTaskToList_0.png](images/3_AddTaskToList_0.png) <br/> ![3_AddTaskToList_1.png](images/3_AddTaskToList_1.png) | No               |
+| `/view-list`   | Opens a dropdown of your lists, then displays all tasks with their status, priority, and due date <br/><br/> ![6_ViewList.png](images/6_ViewList.png)                                                | No               |
+| `/mark-task`   | Opens a dropdown of your lists, then lets you select tasks to mark as finished <br/><br/>  ![4_MarkTask_0.png](images/4_MarkTask_0.png)<br/> ![4_MarkTask_1.png](images/4_MarkTask_1.png)            | No               |
 
 Slash commands must be registered before use by running the bot once with the `--register` flag.
 
@@ -120,10 +121,15 @@ Slash commands must be registered before use by running the bot once with the `-
     - **Deadline** — optional date in `yyyy/MM/dd` format
 3. On a validation error, a **Try Again** button re-opens the modal with the same list pre-selected.
 
+### `/view-list` Flow
+
+1. A dropdown menu lists all task lists belonging to the user.
+2. Selecting a list displays all tasks in that list, showing each task's status (⬜ pending / ✅ finished), priority level, and optional due date.
+
 ### `/mark-task` Flow
 
 1. A dropdown menu lists all task lists belonging to the user.
-2. Selecting a list shows a multi-select dropdown of all tasks in that list.
+2. Selecting a list shows a multi-select dropdown of all pending tasks in that list.
 3. After selecting one or more tasks, a confirmation prompt appears with **All good!** and **Actually, nevermind!** buttons.
 4. Confirming marks all selected tasks as `FINISHED` in the database.
 
@@ -148,35 +154,51 @@ All command types (slash commands, modals, dropdown menus, buttons) share the `C
 
 ```
 src/main/java/dev/kawrl/
-├── MyDiscordBot.kt                          # Entry point — builds and starts the JDA instance
-├── Listeners.java                           # Routes all interaction events to the correct handler
+│
+├── MyDiscordBot.kt
+├── Listeners.java
+│     Entry point and event router. MyDiscordBot builds the JDA instance and
+│     initializes the DB pool; Listeners dispatches every interaction to its handler.
+│
 ├── interfaces/
-│   └── CommandHandler.java                  # Abstract base class + nested interfaces for all interaction types
+│   └── CommandHandler.java
+│         Abstract base class shared by all handlers. Defines the four nested
+│         interfaces: SlashCommandInterface, ModalInterface,
+│         StringSelectMenuInterface, and ButtonInterface.
+│
 ├── botcommands/
-│   ├── PingCommand.kt                       # /ping implementation
-│   ├── ShutdownCommand.kt                   # /shutdown implementation (owner-only)
+│   ├── PingCommand.kt          /ping
+│   ├── ShutdownCommand.kt      /shutdown  (owner-only)
+│   │
 │   └── productivityfeatures/
-│       ├── CreateNewTaskListCommand.kt       # /create-list implementation
-│       ├── addTaskToListCommand/
-│       │   ├── AddTaskCommand.kt            # /add-task — fetches lists, shows dropdown
-│       │   ├── CreateTaskModal.java         # Dropdown handler — opens the add-task modal
-│       │   ├── TaskModalFactory.java        # Builds the reusable add-task Modal object
-│       │   ├── AddTaskModalHandler.kt       # Modal submission handler — validates & writes to DB
-│       │   └── RetryAddTaskButton.java      # "Try Again" button handler — re-opens the modal
-│       └── markTaskAsFinishedCommand/
-│           ├── MarkTasksAsCompleteCommand.kt  # /mark-task — fetches lists, shows dropdown
-│           ├── MarkSelectedTaskFactory.kt     # Dropdown handler — shows task multi-select for chosen list
-│           ├── ApproveSelectedTasksPrompt.kt  # Confirmation prompt with Yes/No buttons
-│           ├── ConfirmMarkedTasks.kt          # "All good!" button handler — marks tasks as FINISHED
-│           └── CancelMarkTasks.java           # "Actually, nevermind!" button handler — cancels flow
+│       │
+│       ├── taskcreation/       Handles everything related to creating lists and tasks.
+│       │   ├── CreateListCommand.kt
+│       │   ├── AddTaskCommand.kt
+│       │   ├── AddTaskMenuHandler.java
+│       │   ├── AddTaskModal.java
+│       │   ├── AddTaskSubmissionHandler.kt
+│       │   └── AddTaskRetryHandler.java
+│       │
+│       ├── taskcompletion/     Handles the full mark-as-finished interaction flow.
+│       │   ├── MarkTaskCommand.kt
+│       │   ├── TaskSelectionHandler.kt
+│       │   ├── MarkTaskConfirmation.kt
+│       │   ├── MarkTaskHandler.kt
+│       │   └── MarkTaskCancelHandler.java
+│       │
+│       └── taskdisplay/        Handles fetching and displaying task lists to the user.
+│           ├── ViewListCommand.kt
+│           └── ViewListHandler.kt
+│
 └── database/
-    ├── DatabaseManager.java                 # HikariCP connection pool setup and lifecycle
-    └── TaskRepo.java                        # All SQL queries for users, task lists, and tasks
+    ├── DatabaseManager.java    HikariCP connection pool setup and lifecycle.
+    └── TaskRepo.java           All SQL queries for users, task lists, and tasks.
 
 src/main/resources/
-└── logback.xml                              # Logging config (console + rolling file output)
+└── logback.xml                 Logging config (console + rolling file appender, 7-day retention).
 
-logs/                                        # Runtime log output (git-ignored)
+logs/                           Runtime log output (git-ignored).
 ```
 
 ---
@@ -187,7 +209,7 @@ logs/                                        # Runtime log output (git-ignored)
 - [x] **`/create-list`** — Create a personal task list
 - [x] **`/add-task`** — Add a task with priority and optional due date
 - [x] **`/mark-task`** — Mark one or more tasks as finished
+- [x] **`/view-list`** — Display all tasks in a chosen list
 - **To-Do List Commands**
-    - [ ] `/view-list` — Display all tasks in a chosen list
     - [ ] `/search-task` — Search across all lists by keyword
     - [ ] `/stats` — View task statistics and completion insights
