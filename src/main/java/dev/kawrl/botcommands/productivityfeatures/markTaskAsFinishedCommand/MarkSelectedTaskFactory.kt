@@ -13,7 +13,7 @@ class MarkSelectedTaskFactory : CommandHandler(), StringSelectMenuInterface {
         val taskList = TaskRepo.getTasksFromTaskListForUser(listId,event.user.id)
 
         if (!taskList.isEmpty()){
-            val taskSelectMenu: StringSelectMenu.Builder = StringSelectMenu.create("select-task")
+            val taskSelectMenu: StringSelectMenu.Builder = StringSelectMenu.create("select-task:$listId")
                 .setPlaceholder("Choose One or Multiple Tasks")
                 .setRequiredRange(1,(taskList.size))
 
