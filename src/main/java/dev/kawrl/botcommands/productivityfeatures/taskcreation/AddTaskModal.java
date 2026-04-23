@@ -1,4 +1,4 @@
-package dev.kawrl.botcommands.productivityfeatures.addTaskToListCommand;
+package dev.kawrl.botcommands.productivityfeatures.taskcreation;
 
 import net.dv8tion.jda.api.components.label.Label;
 import net.dv8tion.jda.api.components.radiogroup.RadioGroup;
@@ -6,7 +6,7 @@ import net.dv8tion.jda.api.components.textinput.TextInput;
 import net.dv8tion.jda.api.components.textinput.TextInputStyle;
 import net.dv8tion.jda.api.modals.Modal;
 
-public class TaskModalFactory {
+public class AddTaskModal {
     public static Modal buildAddTaskModal(String listId) {
         TextInput taskText = TextInput.create("task_string", TextInputStyle.SHORT)
                 .setPlaceholder("e.g., Touching grass")

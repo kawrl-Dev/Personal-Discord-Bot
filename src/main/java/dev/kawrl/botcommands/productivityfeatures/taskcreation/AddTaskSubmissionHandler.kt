@@ -1,4 +1,4 @@
-package dev.kawrl.botcommands.productivityfeatures.addTaskToListCommand
+package dev.kawrl.botcommands.productivityfeatures.taskcreation
 
 import dev.kawrl.database.TaskRepo
 import dev.kawrl.interfaces.CommandHandler
@@ -10,7 +10,7 @@ import java.sql.Date
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-class AddTaskModalHandler : CommandHandler(), ModalInterface {
+class AddTaskSubmissionHandler : CommandHandler(), ModalInterface {
     override fun execute(event: ModalInteractionEvent) {
         val listId =
             event.modalId.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1].trim { it <= ' ' }

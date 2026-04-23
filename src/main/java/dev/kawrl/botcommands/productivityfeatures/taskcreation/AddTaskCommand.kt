@@ -1,4 +1,4 @@
-package dev.kawrl.botcommands.productivityfeatures.addTaskToListCommand
+package dev.kawrl.botcommands.productivityfeatures.taskcreation
 
 import dev.kawrl.interfaces.CommandHandler
 import dev.kawrl.interfaces.CommandHandler.SlashCommandInterface

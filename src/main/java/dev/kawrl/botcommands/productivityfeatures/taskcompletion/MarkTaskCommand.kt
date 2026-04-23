@@ -1,11 +1,11 @@
-package dev.kawrl.botcommands.productivityfeatures.markTaskAsFinishedCommand
+package dev.kawrl.botcommands.productivityfeatures.taskcompletion
 
 import dev.kawrl.interfaces.CommandHandler
 import dev.kawrl.interfaces.CommandHandler.SlashCommandInterface
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 import java.sql.SQLException
 
-class MarkTasksAsCompleteCommand : CommandHandler(), SlashCommandInterface {
+class MarkTaskCommand : CommandHandler(), SlashCommandInterface {
     override fun execute(event: SlashCommandInteractionEvent) {
         val member = event.member
         if (member == null) return

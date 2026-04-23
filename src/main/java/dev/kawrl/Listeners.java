@@ -2,12 +2,8 @@ package dev.kawrl;
 
 import dev.kawrl.botcommands.PingCommand;
 import dev.kawrl.botcommands.ShutdownCommand;
-import dev.kawrl.botcommands.productivityfeatures.*;
-import dev.kawrl.botcommands.productivityfeatures.addTaskToListCommand.AddTaskCommand;
-import dev.kawrl.botcommands.productivityfeatures.addTaskToListCommand.AddTaskModalHandler;
-import dev.kawrl.botcommands.productivityfeatures.addTaskToListCommand.CreateTaskModal;
-import dev.kawrl.botcommands.productivityfeatures.addTaskToListCommand.RetryAddTaskButton;
-import dev.kawrl.botcommands.productivityfeatures.markTaskAsFinishedCommand.*;
+import dev.kawrl.botcommands.productivityfeatures.taskcreation.*;
+import dev.kawrl.botcommands.productivityfeatures.taskcompletion.*;
 import dev.kawrl.interfaces.CommandHandler;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -31,24 +27,24 @@ public class Listeners extends ListenerAdapter {
         // Slash Commands
         slashCommands.put("ping", new PingCommand());
         slashCommands.put("shutdown", new ShutdownCommand());
-        slashCommands.put("create-list", new CreateNewTaskListCommand());
+        slashCommands.put("create-list", new CreateListCommand());
         slashCommands.put("add-task", new AddTaskCommand());
-        slashCommands.put("mark-task", new MarkTasksAsCompleteCommand());
+        slashCommands.put("mark-task", new MarkTaskCommand());
 
         // Menu Select Handlers
-        menuSelectHandlers.put("select-list:add-task", new CreateTaskModal());
+        menuSelectHandlers.put("select-list:add-task", new AddTaskMenuHandler());
 
-        menuSelectHandlers.put("select-list:mark-task", new MarkSelectedTaskFactory());
-        menuSelectHandlers.put("approve-selected-tasks:", new ApproveSelectedTasksPrompt());
+        menuSelectHandlers.put("select-list:mark-task", new TaskSelectionHandler());
+        menuSelectHandlers.put("approve-selected-tasks:", new MarkTaskConfirmation());
 
         // Modal Handlers
-        modalHandlers.put("add-task-modal:", new AddTaskModalHandler());
+        modalHandlers.put("add-task-modal:", new AddTaskSubmissionHandler());
 
         //Button Handlers
-        buttonHandlers.put("retry-add-task:", new RetryAddTaskButton());
+        buttonHandlers.put("retry-add-task:", new AddTaskRetryHandler());
 
-        buttonHandlers.put("yes-response:", new ConfirmMarkedTasks());
-        buttonHandlers.put("no-response", new CancelMarkTasks());
+        buttonHandlers.put("yes-response:", new MarkTaskHandler());
+        buttonHandlers.put("no-response", new MarkTaskCancelHandler());
     }
 
     @Override

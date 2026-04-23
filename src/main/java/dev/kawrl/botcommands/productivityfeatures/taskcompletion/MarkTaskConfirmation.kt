@@ -1,11 +1,11 @@
-package dev.kawrl.botcommands.productivityfeatures.markTaskAsFinishedCommand
+package dev.kawrl.botcommands.productivityfeatures.taskcompletion
 
 import dev.kawrl.interfaces.CommandHandler
 import net.dv8tion.jda.api.components.actionrow.ActionRow
 import net.dv8tion.jda.api.components.buttons.Button
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent
 
-class ApproveSelectedTasksPrompt : CommandHandler(), CommandHandler.StringSelectMenuInterface {
+class MarkTaskConfirmation : CommandHandler(), CommandHandler.StringSelectMenuInterface {
     override fun handle(event: StringSelectInteractionEvent) {
         val listID = event.componentId.removePrefix("approve-selected-tasks:")
         val encodedIDs: String = event.values.joinToString(",")

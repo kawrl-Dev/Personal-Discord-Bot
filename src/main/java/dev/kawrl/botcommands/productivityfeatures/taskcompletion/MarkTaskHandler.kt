@@ -1,11 +1,11 @@
-package dev.kawrl.botcommands.productivityfeatures.markTaskAsFinishedCommand
+package dev.kawrl.botcommands.productivityfeatures.taskcompletion
 
 import dev.kawrl.database.TaskRepo
 import dev.kawrl.interfaces.CommandHandler
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent
 import java.sql.SQLException
 
-class ConfirmMarkedTasks : CommandHandler(), CommandHandler.ButtonInterface {
+class MarkTaskHandler : CommandHandler(), CommandHandler.ButtonInterface {
     override fun handle(event: ButtonInteractionEvent) {
         // componentId format: "yes-response:<listID>|<taskID1>,<taskID2>,..."
         val afterPrefix = event.componentId.removePrefix("yes-response:")

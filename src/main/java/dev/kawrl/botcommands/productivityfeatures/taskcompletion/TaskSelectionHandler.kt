@@ -1,4 +1,4 @@
-package dev.kawrl.botcommands.productivityfeatures.markTaskAsFinishedCommand
+package dev.kawrl.botcommands.productivityfeatures.taskcompletion
 
 import dev.kawrl.database.TaskRepo
 import dev.kawrl.interfaces.CommandHandler
@@ -7,7 +7,7 @@ import net.dv8tion.jda.api.components.actionrow.ActionRow
 import net.dv8tion.jda.api.components.selections.StringSelectMenu
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent
 
-class MarkSelectedTaskFactory : CommandHandler(), StringSelectMenuInterface {
+class TaskSelectionHandler : CommandHandler(), StringSelectMenuInterface {
     override fun handle(event: StringSelectInteractionEvent) {
         val listId: String = event.values[0]
         val taskList = TaskRepo.getTasksFromTaskListForUser(listId,event.user.id)
