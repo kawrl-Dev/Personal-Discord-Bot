@@ -31,10 +31,10 @@ This passion project showcases a lightweight Discord bot built with Java and Kot
 4. **Run the bot**
    ```bash
    # Normal startup
-   java -jar build/libs/MyDiscordBotProject-v1.0.2.jar
+   java -jar build/libs/MyDiscordBotProject-v1.0.3.jar
 
    # Register slash commands (only needed once, or after adding new commands)
-   java -jar build/libs/MyDiscordBotProject-v1.0.2.jar --register
+   java -jar build/libs/MyDiscordBotProject-v1.0.3.jar --register
    ```
 
 ---
@@ -101,12 +101,13 @@ CREATE TABLE tasks (
 
 ## Usage / Commands
 
-| Command        | Description                                                          | Restricted       |
-|----------------|----------------------------------------------------------------------|------------------|
-| `/ping`        | Checks if the bot is alive, returns gateway latency                  | No               |
-| `/shutdown`    | Gracefully shuts down the bot                                        | Yes — owner only |
-| `/create-list` | Creates a new personal task list                                     | No               |
-| `/add-task`    | Opens a dropdown of your lists, then a modal to fill in task details | No               |
+| Command        | Description                                                                                                                                                                    | Restricted       |
+|----------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------|
+| `/ping`        | Checks if the bot is alive, returns gateway latency<br/><br/> ![1_PingCommand.png](images/1_PingCommand.png)                                                                   | No               |
+| `/shutdown`    | Gracefully shuts down the bot <br/><br/> ![2_Create-List_0.png](images/2_Create-List_0.png) <br/> ![2_Create-List_1.png](images/2_Create-List_1.png)                           | Yes — owner only |
+| `/create-list` | Creates a new personal task list <br/><br/> ![3_AddTaskToList_0.png](images/3_AddTaskToList_0.png) <br/> ![3_AddTaskToList_1.png](images/3_AddTaskToList_1.png)                | No               |
+| `/add-task`    | Opens a dropdown of your lists, then a modal to fill in task details <br/><br/> ![4_MarkTask_0.png](images/4_MarkTask_0.png)<br/> ![4_MarkTask_1.png](images/4_MarkTask_1.png) | No               |
+| `/mark-task`   | Opens a dropdown of your lists, then lets you select tasks to mark as finished <br/><br/> ![5_ShutdownCommand.png](images/5_ShutdownCommand.png)                               | No               |
 
 Slash commands must be registered before use by running the bot once with the `--register` flag.
 
@@ -115,10 +116,16 @@ Slash commands must be registered before use by running the bot once with the `-
 1. A dropdown menu lists all task lists belonging to the user.
 2. Selecting a list opens a modal prompting for:
     - **Task** — a short description (max 512 characters)
-    - **Priority** — `LOW`, `MEDIUM`, or `HIGH`
-    - **Task Status** — `PENDING` or `FINISHED`
+    - **Priority** — `LOW`, `MEDIUM`, or `HIGH` (via radio group)
     - **Deadline** — optional date in `yyyy/MM/dd` format
 3. On a validation error, a **Try Again** button re-opens the modal with the same list pre-selected.
+
+### `/mark-task` Flow
+
+1. A dropdown menu lists all task lists belonging to the user.
+2. Selecting a list shows a multi-select dropdown of all tasks in that list.
+3. After selecting one or more tasks, a confirmation prompt appears with **All good!** and **Actually, nevermind!** buttons.
+4. Confirming marks all selected tasks as `FINISHED` in the database.
 
 ---
 
@@ -149,12 +156,19 @@ src/main/java/dev/kawrl/
 │   ├── PingCommand.kt                       # /ping implementation
 │   ├── ShutdownCommand.kt                   # /shutdown implementation (owner-only)
 │   └── productivityfeatures/
-│       ├── CreateNewTaskListCommand.java     # /create-list implementation
-│       ├── AddTaskCommand.java              # /add-task — fetches lists, shows dropdown
-│       ├── CreateTaskModal.java             # Dropdown handler — opens the add-task modal
-│       ├── TaskModalFactory.java            # Builds the reusable add-task Modal object
-│       ├── AddTaskModalHandler.java         # Modal submission handler — validates & writes to DB
-│       └── RetryAddTaskButton.java          # "Try Again" button handler — re-opens the modal
+│       ├── CreateNewTaskListCommand.kt       # /create-list implementation
+│       ├── addTaskToListCommand/
+│       │   ├── AddTaskCommand.kt            # /add-task — fetches lists, shows dropdown
+│       │   ├── CreateTaskModal.java         # Dropdown handler — opens the add-task modal
+│       │   ├── TaskModalFactory.java        # Builds the reusable add-task Modal object
+│       │   ├── AddTaskModalHandler.kt       # Modal submission handler — validates & writes to DB
+│       │   └── RetryAddTaskButton.java      # "Try Again" button handler — re-opens the modal
+│       └── markTaskAsFinishedCommand/
+│           ├── MarkTasksAsCompleteCommand.kt  # /mark-task — fetches lists, shows dropdown
+│           ├── MarkSelectedTaskFactory.kt     # Dropdown handler — shows task multi-select for chosen list
+│           ├── ApproveSelectedTasksPrompt.kt  # Confirmation prompt with Yes/No buttons
+│           ├── ConfirmMarkedTasks.kt          # "All good!" button handler — marks tasks as FINISHED
+│           └── CancelMarkTasks.java           # "Actually, nevermind!" button handler — cancels flow
 └── database/
     ├── DatabaseManager.java                 # HikariCP connection pool setup and lifecycle
     └── TaskRepo.java                        # All SQL queries for users, task lists, and tasks
@@ -171,10 +185,9 @@ logs/                                        # Runtime log output (git-ignored)
 
 - [x] **MySQL Database Integration**
 - [x] **`/create-list`** — Create a personal task list
-- [x] **`/add-task`** — Add a task with priority, status, and optional due date
+- [x] **`/add-task`** — Add a task with priority and optional due date
+- [x] **`/mark-task`** — Mark one or more tasks as finished
 - **To-Do List Commands**
     - [ ] `/view-list` — Display all tasks in a chosen list
-    - [ ] `/complete-task` — Mark a task as done by its ID
-    - [ ] `/delete-task` — Remove a task by its ID
     - [ ] `/search-task` — Search across all lists by keyword
     - [ ] `/stats` — View task statistics and completion insights
