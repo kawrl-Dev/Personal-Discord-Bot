@@ -142,15 +142,17 @@ public class TaskRepo {
      *
      * @return true if a row was updated, false if the task_id didn't exist.
      */
-    public static boolean completeTask(long taskId) throws SQLException {
+    public static boolean completeTask(long taskId, long listID) throws SQLException {
         String sql = """
                 UPDATE tasks
                 SET tasks.task_status = 'FINISHED'
-                WHERE tasks.task_id = ?;
+                WHERE tasks.task_id = ? AND
+                tasks.list_id = ?;
                 """;
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setLong(1, taskId);
+            ps.setLong(2, listID);
             return ps.executeUpdate() > 0;
         }
     }
