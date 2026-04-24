@@ -104,14 +104,14 @@ CREATE TABLE tasks (
 
 ## Usage / Commands
 
-| Command        | Description                                                                                                                                                                                          | Restricted       |
-|----------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------|
-| `/ping`        | Checks if the bot is alive, returns gateway latency<br/><br/> ![1_PingCommand.png](images/1_PingCommand.png)                                                                                         | No               |
-| `/shutdown`    | Gracefully shuts down the bot <br/><br/> ![5_ShutdownCommand.png](images/5_ShutdownCommand.png)                                                                                                      | Yes — owner only |
-| `/create-list` | Creates a new personal task list <br/><br/> ![2_Create-List_0.png](images/2_Create-List_0.png) <br/> ![2_Create-List_1.png](images/2_Create-List_1.png)                                              | No               |
-| `/add-task`    | Opens a dropdown of your lists, then a modal to fill in task details <br/><br/>  ![3_AddTaskToList_0.png](images/3_AddTaskToList_0.png) <br/> ![3_AddTaskToList_1.png](images/3_AddTaskToList_1.png) | No               |
-| `/view-list`   | Opens a dropdown of your lists, then displays all tasks with their status, priority, and due date <br/><br/> ![6_ViewList.png](images/6_ViewList.png)                                                | No               |
-| `/mark-task`   | Opens a dropdown of your lists, then lets you select tasks to mark as finished <br/><br/>  ![4_MarkTask_0.png](images/4_MarkTask_0.png)<br/> ![4_MarkTask_1.png](images/4_MarkTask_1.png)            | No               |
+| Command        | Demonstration                                       | Restricted       |
+|----------------|:----------------------------------------------------|------------------|
+| `/ping`        | ![PingCommand.gif](assets/demo/PingCommand.gif)     | No               |
+| `/create-list` | ![Create List.gif](assets/demo/Create%20List.gif)   | No               |
+| `/add-task`    | ![Add Task.gif](assets/demo/Add%20Task.gif)         | No               |
+| `/view-list`   | ![View List.gif](assets/demo/View%20List.gif)       | No               |
+| `/mark-task`   | ![Mark Task.gif](assets/demo/Mark%20Task.gif)       | No               |
+| `/shutdown`    | ![Shutdown Bot.gif](assets/demo/Shutdown%20Bot.gif) | Yes — owner only |
 
 Slash commands must be registered before use by running the bot once with the `--register` flag.
 
