@@ -1,9 +1,6 @@
 # 🤖 My Personal Discord Bot 🤖
 
-This passion project showcases a lightweight Discord bot built with **Java** and **Kotlin** using the [Java Discord API](https://github.com/discord-jda/JDA). 
-The codebase uses both languages side by side — Kotlin handles the bot's entry point, slash commands, and interaction handlers, 
-while Java covers the database layer and event routing. It features a slash command architecture, structured logging, MySQL database 
-integration via HikariCP, and support for modals, dropdowns, and button interactions.
+This passion project showcases a lightweight Discord bot built with **Java** and **Kotlin** using the [Java Discord API](https://github.com/discord-jda/JDA). The uses both languages side by side — Kotlin handles the bot's entry point, slash commands, and interaction handlers, while Java covers the database layer and event routing. It features a slash command architecture, structured logging, MySQL database integration via HikariCP, and support for modals, dropdowns, and button interactions.
 ![Create List.gif](assets/demo/Create%20List.gif)
 ---
 
