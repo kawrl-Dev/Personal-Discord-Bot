@@ -1,5 +1,8 @@
 package dev.kawrl
 
+import java.net.InetSocketAddress
+import java.net.Socket
+
 // Dotenv
 import io.github.cdimascio.dotenv.Dotenv
 
@@ -27,6 +30,12 @@ object MyDiscordBot {
 
     @JvmStatic
     fun main(args: Array<String>) {
+        if (!isInternetAvailable()) {
+            log.error("No internet connection detected. Bot startup aborted.")
+            return
+        }
+        log.info("Internet Connection Confirmed. Starting up the bot right now!")
+
         DatabaseManager.initialize(dotenv)
 
         try {
@@ -66,6 +75,15 @@ object MyDiscordBot {
             DatabaseManager.shutdown()
         }
     }
+}
+
+private fun isInternetAvailable(): Boolean {
+    return try {
+        Socket().use { socket ->
+            socket.connect(InetSocketAddress("8.8.8.8", 53), 3000)
+        }
+        true
+    } catch (_: Exception) { false }
 }
 
 private fun requireEnv(key: String): String {
