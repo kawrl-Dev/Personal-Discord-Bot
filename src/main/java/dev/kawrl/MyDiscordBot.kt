@@ -15,6 +15,7 @@ import net.dv8tion.jda.api.JDABuilder
 import net.dv8tion.jda.api.entities.Activity
 import net.dv8tion.jda.api.interactions.commands.OptionType
 import net.dv8tion.jda.api.interactions.commands.build.Commands
+import net.dv8tion.jda.api.interactions.commands.build.SubcommandData
 import net.dv8tion.jda.api.requests.GatewayIntent
 
 // Logger
@@ -54,12 +55,16 @@ object MyDiscordBot {
                 jda.updateCommands().addCommands(
                     Commands.slash("ping", "Checks if bot is alive"),
                     Commands.slash("shutdown", "Shuts down the Discord Bot."),
-                    Commands.slash("create-list", "Creates a new task list")
-                        .addOption(OptionType.STRING, "list-name", "Name of the task list", true),
-                    Commands.slash("view-list","View all tasks in a list"),
-                    Commands.slash("add-task","Create a task"),
-                    Commands.slash("mark-task","Mark task/tasks as finished"),
-                ).queue()
+                    Commands.slash("productivity-bot","Starts a productivity session")
+                        .addSubcommands(
+                            SubcommandData("create-list", "Creates a new task list")
+                                .addOption(OptionType.STRING, "list-name", "Name of the task list", true),
+                            SubcommandData("view-list","View all tasks in a selected list"),
+                            SubcommandData("add-task","Create a Task"),
+                            SubcommandData("mark-task","Mark selected task/tasks as finished")
+                        )
+                )
+                .queue()
                 log.info("Commands registered!")
             }
 
