@@ -53,7 +53,9 @@ public class Listeners extends ListenerAdapter {
 
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
-        CommandHandler.SlashCommandInterface command = slashCommands.get(event.getName().toLowerCase());
+        String commandPath = event.getSubcommandName() != null ? event.getSubcommandName(): event.getName();
+
+        CommandHandler.SlashCommandInterface command = slashCommands.get(commandPath.toLowerCase());
         if (command != null) try {
             command.execute(event);
         } catch (Exception e) {
