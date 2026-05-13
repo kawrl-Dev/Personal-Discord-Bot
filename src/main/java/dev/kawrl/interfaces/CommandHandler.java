@@ -33,11 +33,13 @@ public abstract class CommandHandler {
     }
 
     protected void replyWithListSelector(SlashCommandInteractionEvent event, String menuID, String prompt) throws SQLException{
+        event.deferReply(true).queue();
+
         String userId = Objects.requireNonNull(event.getMember()).getId();
         Map<String, Long> lists = TaskRepo.getListNamesForUser(userId);
 
         if (lists.isEmpty()){
-            event.reply("You have no task lists yet! Create one first with '/create-list'")
+            event.getHook().sendMessage("You have no task lists yet! Create one first with '/create-list'")
                     .setEphemeral(true)
                     .queue();
             return;
@@ -46,9 +48,8 @@ public abstract class CommandHandler {
         StringSelectMenu.Builder menuBuilder = StringSelectMenu.create(menuID).setPlaceholder("Choose a List");
         lists.forEach((name,id) -> menuBuilder.addOption(name,id.toString()));
 
-        event.reply(prompt)
-                .addComponents(ActionRow.of(menuBuilder.build()))
-                .setEphemeral(true)
+        event.getHook().editOriginal(prompt)
+                .setComponents(ActionRow.of(menuBuilder.build()))
                 .queue();
     }
 }
