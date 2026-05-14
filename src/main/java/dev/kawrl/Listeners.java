@@ -2,6 +2,9 @@ package dev.kawrl;
 
 import dev.kawrl.botcommands.PingCommand;
 import dev.kawrl.botcommands.ShutdownCommand;
+import dev.kawrl.botcommands.productivityfeatures.listdeletion.ClearAllListsCancelHandler;
+import dev.kawrl.botcommands.productivityfeatures.listdeletion.ClearAllListsCommand;
+import dev.kawrl.botcommands.productivityfeatures.listdeletion.ClearAllListsHandler;
 import dev.kawrl.botcommands.productivityfeatures.taskcreation.*;
 import dev.kawrl.botcommands.productivityfeatures.taskcompletion.*;
 import dev.kawrl.botcommands.productivityfeatures.taskdisplay.ViewListCommand;
@@ -33,6 +36,7 @@ public class Listeners extends ListenerAdapter {
         slashCommands.put("add-task", new AddTaskCommand());
         slashCommands.put("mark-task", new MarkTaskCommand());
         slashCommands.put("view-list", new ViewListCommand());
+        slashCommands.put("clear-all-lists", new ClearAllListsCommand());
 
         // Menu Select Handlers
         menuSelectHandlers.put("select-list:add-task", new AddTaskMenuHandler());
@@ -46,9 +50,10 @@ public class Listeners extends ListenerAdapter {
 
         //Button Handlers
         buttonHandlers.put("retry-add-task:", new AddTaskRetryHandler());
-
         buttonHandlers.put("yes-response:", new MarkTaskHandler());
         buttonHandlers.put("no-response", new MarkTaskCancelHandler());
+        buttonHandlers.put("confirm-clear-yes",new ClearAllListsHandler());
+        buttonHandlers.put("confirm-clear-no",new ClearAllListsCancelHandler());
     }
 
     @Override
