@@ -17,8 +17,7 @@ class ViewListCommand: CommandHandler(), CommandHandler.SlashCommandInterface {
             )
         } catch (e: SQLException){
             logger.error("Database error while getting task lists from user '{}': {}", username, e.toString())
-            event.reply("A database error occurred. Please try again later.")
-                .setEphemeral(true)
+            event.hook.editOriginal("A database error occurred. Please try again later.")
                 .queue()
         }
     }

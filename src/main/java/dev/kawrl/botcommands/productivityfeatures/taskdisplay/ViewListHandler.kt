@@ -16,7 +16,7 @@ class ViewListHandler : CommandHandler(), StringSelectMenuInterface {
             event.reply(formatted).setEphemeral(true).queue()
         } catch (e: SQLException){
             logger.error("Database error while viewing list #{}: {}", listID, e.toString())
-            event.reply("A database error occurred. Please try again later.").setEphemeral(true).queue()
+            event.hook.editOriginal("A database error occurred. Please try again later.").queue()
         }
     }
 }
