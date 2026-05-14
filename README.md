@@ -1,8 +1,9 @@
 # 🤖 My Personal Discord Bot 🤖
 
-This passion project showcases a lightweight Discord bot built with **Java** and **Kotlin** using the [Java Discord API](https://github.com/discord-jda/JDA). The uses both languages side by side — Kotlin handles the bot's entry point, slash commands, and interaction handlers, while Java covers the database layer and event routing. It features a slash command architecture, structured logging, MySQL database integration via HikariCP, and support for modals, dropdowns, and button interactions.
+This passion project showcases a lightweight Discord bot built with **Java** and **Kotlin** using the [Java Discord API](https://github.com/discord-jda/JDA). The bot uses both languages side by side — Kotlin handles the entry point, slash commands, and interaction handlers, while Java covers the database layer and event routing. It features a slash command architecture with subcommand grouping, structured logging, MySQL database integration via HikariCP, and support for modals, dropdowns, and button interactions.
 
 ![Create List.gif](assets/demo/Create%20List.gif)
+
 ---
 
 ## Requirements
@@ -32,10 +33,10 @@ This passion project showcases a lightweight Discord bot built with **Java** and
 4. **Run the bot**
    ```bash
    # Normal startup
-   java -jar build/libs/MyDiscordBotProject-v1.0.4.jar
+   java -jar build/libs/MyDiscordBotProject-v2.0.0.jar
 
    # Register slash commands (only needed once, or after adding new commands)
-   java -jar build/libs/MyDiscordBotProject-v1.0.4.jar --register
+   java -jar build/libs/MyDiscordBotProject-v2.0.0.jar --register
    ```
 
 ---
@@ -102,18 +103,21 @@ CREATE TABLE tasks (
 
 ## Usage / Commands
 
-| Command        | Demonstration                                       | Restricted       |
-|----------------|:----------------------------------------------------|------------------|
-| `/ping`        | ![PingCommand.gif](assets/demo/PingCommand.gif)     | No               |
-| `/create-list` | ![Create List.gif](assets/demo/Create%20List.gif)   | No               |
-| `/add-task`    | ![Add Task.gif](assets/demo/Add%20Task.gif)         | No               |
-| `/view-list`   | ![View List.gif](assets/demo/View%20List.gif)       | No               |
-| `/mark-task`   | ![Mark Task.gif](assets/demo/Mark%20Task.gif)       | No               |
-| `/shutdown`    | ![Shutdown Bot.gif](assets/demo/Shutdown%20Bot.gif) | Yes — owner only |
+Productivity commands are grouped under the `/productivity-bot` subcommand. Top-level commands (`/ping`, `/shutdown`) remain standalone.
+
+| Command                             | Demonstration                                                 | Restricted       |
+|-------------------------------------|:--------------------------------------------------------------|------------------|
+| `/ping`                             | ![PingCommand.gif](assets/demo/PingCommand.gif)               | No               |
+| `/productivity-bot create-list`     | ![Create List.gif](assets/demo/Create%20List.gif)             | No               |
+| `/productivity-bot add-task`        | ![Add Task.gif](assets/demo/Add%20Task.gif)                   | No               |
+| `/productivity-bot view-list`       | ![View List.gif](assets/demo/View%20List.gif)                 | No               |
+| `/productivity-bot mark-task`       | ![Mark Task.gif](assets/demo/Mark%20Task.gif)                 | No               |
+| `/productivity-bot clear-all-lists` | ![Create All Lists.gif](assets/demo/Create%20All%20Lists.gif) | No               |
+| `/shutdown`                         | ![Shutdown Bot.gif](assets/demo/Shutdown%20Bot.gif)           | Yes — owner only |
 
 Slash commands must be registered before use by running the bot once with the `--register` flag.
 
-### `/add-task` Flow
+### `/productivity-bot add-task` Flow
 
 1. A dropdown menu lists all task lists belonging to the user.
 2. Selecting a list opens a modal prompting for:
@@ -122,17 +126,22 @@ Slash commands must be registered before use by running the bot once with the `-
     - **Deadline** — optional date in `yyyy/MM/dd` format
 3. On a validation error, a **Try Again** button re-opens the modal with the same list pre-selected.
 
-### `/view-list` Flow
+### `/productivity-bot view-list` Flow
 
 1. A dropdown menu lists all task lists belonging to the user.
 2. Selecting a list displays all tasks in that list, showing each task's status (⬜ pending / ✅ finished), priority level, and optional due date.
 
-### `/mark-task` Flow
+### `/productivity-bot mark-task` Flow
 
 1. A dropdown menu lists all task lists belonging to the user.
 2. Selecting a list shows a multi-select dropdown of all pending tasks in that list.
 3. After selecting one or more tasks, a confirmation prompt appears with **All good!** and **Actually, nevermind!** buttons.
 4. Confirming marks all selected tasks as `FINISHED` in the database.
+
+### `/productivity-bot clear-all-lists` Flow
+
+1. A confirmation prompt appears with **Yes, do it!** and **Nevermind!** buttons.
+2. Confirming permanently deletes all task lists and their associated tasks for the user. This action cannot be undone.
 
 ---
 
@@ -188,9 +197,14 @@ src/main/java/dev/kawrl/
 │       │   ├── MarkTaskHandler.kt
 │       │   └── MarkTaskCancelHandler.java
 │       │
-│       └── taskdisplay/        Handles fetching and displaying task lists to the user.
-│           ├── ViewListCommand.kt
-│           └── ViewListHandler.kt
+│       ├── taskdisplay/        Handles fetching and displaying task lists to the user.
+│       │   ├── ViewListCommand.kt
+│       │   └── ViewListHandler.kt
+│       │
+│       └── listdeletion/       Handles the full clear-all-lists confirmation flow.
+│           ├── ClearAllListsCommand.kt
+│           ├── ClearAllListsHandler.java
+│           └── ClearAllListsCancelHandler.java
 │
 └── database/
     ├── DatabaseManager.java    HikariCP connection pool setup and lifecycle.
@@ -207,10 +221,11 @@ logs/                           Runtime log output (git-ignored).
 ## Planned Features
 
 - [x] **MySQL Database Integration**
-- [x] **`/create-list`** — Create a personal task list
-- [x] **`/add-task`** — Add a task with priority and optional due date
-- [x] **`/mark-task`** — Mark one or more tasks as finished
-- [x] **`/view-list`** — Display all tasks in a chosen list
+- [x] **`/productivity-bot create-list`** — Create a personal task list
+- [x] **`/productivity-bot add-task`** — Add a task with priority and optional due date
+- [x] **`/productivity-bot mark-task`** — Mark one or more tasks as finished
+- [x] **`/productivity-bot view-list`** — Display all tasks in a chosen list
+- [x] **`/productivity-bot clear-all-lists`** — Delete all task lists and their tasks
 - **To-Do List Commands**
     - [ ] `/search-task` — Search across all lists by keyword
     - [ ] `/stats` — View task statistics and completion insights
