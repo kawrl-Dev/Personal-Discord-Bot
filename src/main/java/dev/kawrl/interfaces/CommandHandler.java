@@ -2,6 +2,7 @@ package dev.kawrl.interfaces;
 
 import dev.kawrl.database.TaskRepo;
 import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.components.selections.StringSelectMenu;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -50,6 +51,21 @@ public abstract class CommandHandler {
 
         event.getHook().editOriginal(prompt)
                 .setComponents(ActionRow.of(menuBuilder.build()))
+                .queue();
+    }
+
+    protected void replyWithConfirmation(
+            SlashCommandInteractionEvent event,
+            String yesButtonId,
+            String noButtonId,
+            String prompt
+    ) {
+        Button yesButton = Button.success(yesButtonId, "Yes, do it!");
+        Button noButton  = Button.danger(noButtonId,  "Nevermind!");
+
+        event.reply(prompt)
+                .addComponents(ActionRow.of(yesButton, noButton))
+                .setEphemeral(true)
                 .queue();
     }
 }
