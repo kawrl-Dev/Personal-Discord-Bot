@@ -61,7 +61,8 @@ object MyDiscordBot {
                                 .addOption(OptionType.STRING, "list-name", "Name of the task list", true),
                             SubcommandData("view-list","View all tasks in a selected list"),
                             SubcommandData("add-task","Create a Task"),
-                            SubcommandData("mark-task","Mark selected task/tasks as finished")
+                            SubcommandData("mark-task","Mark selected task/tasks as finished"),
+                            SubcommandData("clear-all-lists","Deletes all your task lists and their tasks")
                         )
                 )
                 .queue()
