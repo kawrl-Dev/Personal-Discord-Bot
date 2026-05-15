@@ -1,7 +1,9 @@
 package dev.kawrl.database;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -205,6 +207,78 @@ public class TaskRepo {
                 }
                 if (count == 0) sb.append("*No tasks yet. Add one with `/add-task`!*");
                 return sb.toString();
+            }
+        }
+    }
+
+    /**
+     * Full-text search across all tasks belonging to a user.
+     * Returns a page of results using LIMIT + OFFSET.
+     *
+     * @param userId   the Discord user ID to scope results
+     * @param keyword  the search term (used in MATCH...AGAINST)
+     * @param offset   number of rows to skip (for pagination)
+     * @param pageSize number of rows to return
+     * @return ordered list of formatted result strings, ready for display
+     */
+    public static List<String> searchTasks(String userId, String keyword, int offset, int pageSize) throws SQLException {
+        String sql = """
+            SELECT
+                t.task_text,
+                t.task_status,
+                t.priority,
+                t.due_date,
+                tl.list_name
+            FROM tasks t
+            JOIN task_lists tl ON t.list_id = tl.list_id
+            WHERE tl.user_id = ?
+              AND MATCH(t.task_text) AGAINST(? IN BOOLEAN MODE)
+            ORDER BY MATCH(t.task_text) AGAINST(? IN BOOLEAN MODE) DESC
+            LIMIT ? OFFSET ?
+            """;
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, userId);
+            ps.setString(2, keyword);
+            ps.setString(3, keyword);
+            ps.setInt(4, pageSize);
+            ps.setInt(5, offset);
+            try (ResultSet rs = ps.executeQuery()) {
+                List<String> results = new ArrayList<>();
+                while (rs.next()) {
+                    boolean done = "FINISHED".equals(rs.getString("task_status"));
+                    String check = done ? "✅" : "⬜";
+                    String due = rs.getDate("due_date") != null
+                            ? " (Deadline: " + rs.getDate("due_date") + ")"
+                            : "";
+                    results.add(String.format("%s %s from list **%s**%s",
+                            check,
+                            rs.getString("task_text"),
+                            rs.getString("list_name"),
+                            due));
+                }
+                return results;
+            }
+        }
+    }
+
+    /**
+     * Returns the total number of tasks matching the keyword for a user.
+     * Used to determine total page count.
+     */
+    public static int countSearchResults(String userId, String keyword) throws SQLException {
+        String sql = """
+            SELECT COUNT(*) FROM tasks t
+            JOIN task_lists tl ON t.list_id = tl.list_id
+            WHERE tl.user_id = ?
+              AND MATCH(t.task_text) AGAINST(? IN BOOLEAN MODE)
+            """;
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, userId);
+            ps.setString(2, keyword);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next() ? rs.getInt(1) : 0;
             }
         }
     }

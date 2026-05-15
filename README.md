@@ -214,6 +214,9 @@ src/main/resources/
 └── logback.xml                 Logging config (console + rolling file appender, 7-day retention).
 
 logs/                           Runtime log output (git-ignored).
+
+db
+└── schema.sql                  Initial database schema and table definitions.
 ```
 
 ---
