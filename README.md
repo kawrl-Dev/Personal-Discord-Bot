@@ -2,7 +2,7 @@
 
 This passion project showcases a lightweight Discord bot built with **Java** and **Kotlin** using the [Java Discord API](https://github.com/discord-jda/JDA). The bot uses both languages side by side — Kotlin handles the entry point, slash commands, and interaction handlers, while Java covers the database layer and event routing. It features a slash command architecture with subcommand grouping, structured logging, MySQL database integration via HikariCP, and support for modals, dropdowns, and button interactions.
 
-![Create List.gif](assets/demo/Create%20List.gif)
+<!-- Unique Feature of Discord Bot here (should be a GIF file) -->
 
 ---
 
@@ -33,10 +33,10 @@ This passion project showcases a lightweight Discord bot built with **Java** and
 4. **Run the bot**
    ```bash
    # Normal startup
-   java -jar build/libs/MyDiscordBotProject-v2.0.0.jar
+   java -jar build/libs/MyDiscordBotProject-v2.0.2.jar
 
    # Register slash commands (only needed once, or after adding new commands)
-   java -jar build/libs/MyDiscordBotProject-v2.0.0.jar --register
+   java -jar build/libs/MyDiscordBotProject-v2.0.2.jar --register
    ```
 
 ---
@@ -97,6 +97,9 @@ CREATE TABLE tasks (
     created_at  DATETIME                      NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT tasks_ibfk_1 FOREIGN KEY (list_id) REFERENCES task_lists (list_id) ON DELETE CASCADE
 );
+
+-- Full-text search index for /search-task
+ALTER TABLE tasks ADD FULLTEXT INDEX ft_task_text (task_text);
 ```
 
 ---
@@ -105,15 +108,16 @@ CREATE TABLE tasks (
 
 Productivity commands are grouped under the `/productivity-bot` subcommand. Top-level commands (`/ping`, `/shutdown`) remain standalone.
 
-| Command                             | Demonstration                                                 | Restricted       |
-|-------------------------------------|:--------------------------------------------------------------|------------------|
-| `/ping`                             | ![PingCommand.gif](assets/demo/PingCommand.gif)               | No               |
-| `/productivity-bot create-list`     | ![Create List.gif](assets/demo/Create%20List.gif)             | No               |
-| `/productivity-bot add-task`        | ![Add Task.gif](assets/demo/Add%20Task.gif)                   | No               |
-| `/productivity-bot view-list`       | ![View List.gif](assets/demo/View%20List.gif)                 | No               |
-| `/productivity-bot mark-task`       | ![Mark Task.gif](assets/demo/Mark%20Task.gif)                 | No               |
-| `/productivity-bot clear-all-lists` | ![Create All Lists.gif](assets/demo/Create%20All%20Lists.gif) | No               |
-| `/shutdown`                         | ![Shutdown Bot.gif](assets/demo/Shutdown%20Bot.gif)           | Yes — owner only |
+| Command                             | Demonstration                                                                                             | Restricted       |
+|-------------------------------------|:----------------------------------------------------------------------------------------------------------|------------------|
+| `/ping`                             | ![Ping Bot.gif](assets/demo/Ping%20Bot.gif)                                                               | No               |
+| `/productivity-bot create-list`     | ![Create List.gif](assets/demo/Create%20List.gif)                                                         | No               |
+| `/productivity-bot add-task`        | ![Add Task.gif](assets/demo/Add%20Task.gif)                                                               | No               |
+| `/productivity-bot view-list`       | ![View List.gif](assets/demo/View%20List.gif)                                                             | No               |
+| `/productivity-bot mark-task`       | ![Mark Task_1.gif](assets/demo/Mark%20Task_1.gif) </br> ![Mark Task_2.png](assets/demo/Mark%20Task_2.png) | No               |
+| `/productivity-bot search-task`     | ![Search Task.gif](assets/demo/Search%20Task.gif)                                                         | No               |
+| `/productivity-bot clear-all-lists` | ![Clear All Lists.gif](assets/demo/Clear%20All%20Lists.gif)                                               | No               |
+| `/shutdown`                         | ![Shutdown Bot.gif](assets/demo/Shutdown%20Bot.gif)                                                       | Yes — Owner Only |
 
 Slash commands must be registered before use by running the bot once with the `--register` flag.
 
@@ -121,9 +125,9 @@ Slash commands must be registered before use by running the bot once with the `-
 
 1. A dropdown menu lists all task lists belonging to the user.
 2. Selecting a list opens a modal prompting for:
-    - **Task** — a short description (max 512 characters)
-    - **Priority** — `LOW`, `MEDIUM`, or `HIGH` (via radio group)
-    - **Deadline** — optional date in `yyyy/MM/dd` format
+   - **Task** — a short description (max 512 characters)
+   - **Priority** — `LOW`, `MEDIUM`, or `HIGH` (via radio group)
+   - **Deadline** — optional date in `yyyy/MM/dd` format
 3. On a validation error, a **Try Again** button re-opens the modal with the same list pre-selected.
 
 ### `/productivity-bot view-list` Flow
@@ -137,6 +141,13 @@ Slash commands must be registered before use by running the bot once with the `-
 2. Selecting a list shows a multi-select dropdown of all pending tasks in that list.
 3. After selecting one or more tasks, a confirmation prompt appears with **All good!** and **Actually, nevermind!** buttons.
 4. Confirming marks all selected tasks as `FINISHED` in the database.
+
+### `/productivity-bot search-task` Flow
+
+1. Running the command opens a modal prompting for a **keyword** (max 50 characters).
+2. Results are displayed as a numbered, read-only ephemeral list showing each task's status (⬜ pending / ✅ finished), task text, source list name, and optional deadline.
+3. If results exceed 5 per page, **◀ Back** and **Next ▶** buttons appear to navigate pages.
+4. If no tasks match the keyword, a plain message is shown.
 
 ### `/productivity-bot clear-all-lists` Flow
 
@@ -201,6 +212,13 @@ src/main/java/dev/kawrl/
 │       │   ├── ViewListCommand.kt
 │       │   └── ViewListHandler.kt
 │       │
+│       ├── tasksearch/         Handles keyword search across all user task lists.
+│       │   ├── SearchTaskCommand.kt
+│       │   ├── SearchTaskModal.java
+│       │   ├── SearchTaskFormatter.kt
+│       │   ├── SearchTaskSubmissionHandler.kt
+│       │   └── SearchTaskPageHandler.kt
+│       │
 │       └── listdeletion/       Handles the full clear-all-lists confirmation flow.
 │           ├── ClearAllListsCommand.kt
 │           ├── ClearAllListsHandler.java
@@ -215,7 +233,7 @@ src/main/resources/
 
 logs/                           Runtime log output (git-ignored).
 
-db
+db/
 └── schema.sql                  Initial database schema and table definitions.
 ```
 
@@ -223,12 +241,5 @@ db
 
 ## Planned Features
 
-- [x] **MySQL Database Integration**
-- [x] **`/productivity-bot create-list`** — Create a personal task list
-- [x] **`/productivity-bot add-task`** — Add a task with priority and optional due date
-- [x] **`/productivity-bot mark-task`** — Mark one or more tasks as finished
-- [x] **`/productivity-bot view-list`** — Display all tasks in a chosen list
-- [x] **`/productivity-bot clear-all-lists`** — Delete all task lists and their tasks
 - **To-Do List Commands**
-    - [ ] `/search-task` — Search across all lists by keyword
-    - [ ] `/stats` — View task statistics and completion insights
+   - [ ] `/productivity-bot stats` — View task statistics and completion insights
