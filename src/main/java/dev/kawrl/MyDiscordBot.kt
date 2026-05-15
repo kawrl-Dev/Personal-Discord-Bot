@@ -62,6 +62,7 @@ object MyDiscordBot {
                             SubcommandData("view-list","View all tasks in a selected list"),
                             SubcommandData("add-task","Create a Task"),
                             SubcommandData("mark-task","Mark selected task/tasks as finished"),
+                            SubcommandData("search-task","Search for a task across all of your lists"),
                             SubcommandData("clear-all-lists","Deletes all your task lists and their tasks")
                         )
                 )
