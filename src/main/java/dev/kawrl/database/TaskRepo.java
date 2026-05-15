@@ -251,7 +251,7 @@ public class TaskRepo {
                     String due = rs.getDate("due_date") != null
                             ? " (Deadline: " + rs.getDate("due_date") + ")"
                             : "";
-                    results.add(String.format("%s %s from list **%s**%s",
+                    results.add(String.format("%s %s from **%s**%s",
                             check,
                             rs.getString("task_text"),
                             rs.getString("list_name"),
