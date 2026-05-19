@@ -3,18 +3,19 @@ package dev.kawrl.botcommands.productivityfeatures.taskcompletion
 import dev.kawrl.database.TaskRepo
 import dev.kawrl.interfaces.CommandHandler
 import dev.kawrl.interfaces.CommandHandler.StringSelectMenuInterface
+import dev.kawrl.interfaces.TaskRepositoryInterface
 import net.dv8tion.jda.api.components.actionrow.ActionRow
 import net.dv8tion.jda.api.components.selections.StringSelectMenu
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent
 import java.sql.SQLException
 
-class TaskSelectionHandler : CommandHandler(), StringSelectMenuInterface {
+class TaskSelectionHandler(private val repo: TaskRepositoryInterface) : CommandHandler(), StringSelectMenuInterface {
     override fun handle(event: StringSelectInteractionEvent) {
         val member = event.member
         val username = member!!.user.name
         val listId: String = event.values[0]
         try {
-            val taskList = TaskRepo.getTasksFromTaskListForUser(listId,event.user.id)
+            val taskList = repo.getTasksFromTaskListForUser(listId,event.user.id)
 
             if (!taskList.isEmpty()){
                 val taskSelectMenu: StringSelectMenu.Builder = StringSelectMenu.create("approve-selected-tasks:$listId")

@@ -2,10 +2,11 @@ package dev.kawrl.botcommands.productivityfeatures.taskcompletion
 
 import dev.kawrl.database.TaskRepo
 import dev.kawrl.interfaces.CommandHandler
+import dev.kawrl.interfaces.TaskRepositoryInterface
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent
 import java.sql.SQLException
 
-class MarkTaskHandler : CommandHandler(), CommandHandler.ButtonInterface {
+class MarkTaskHandler(private val repo: TaskRepositoryInterface) : CommandHandler(), CommandHandler.ButtonInterface {
     override fun handle(event: ButtonInteractionEvent) {
         // componentId format: "yes-response:<listID>|<taskID1>,<taskID2>,..."
         val afterPrefix = event.componentId.removePrefix("yes-response:")
@@ -28,7 +29,7 @@ class MarkTaskHandler : CommandHandler(), CommandHandler.ButtonInterface {
             }
 
             try {
-                val success = TaskRepo.completeTask(taskID, listID)
+                val success = repo.completeTask(taskID, listID)
                 if (success) marked.add(taskID) else failed.add(taskID)
             } catch (e: SQLException) {
                 logger.error("DB error marking task #{} as complete: {}", taskID, e.toString())

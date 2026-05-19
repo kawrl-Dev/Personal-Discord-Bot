@@ -3,6 +3,7 @@ package dev.kawrl.botcommands.productivityfeatures.taskcreation
 import dev.kawrl.database.TaskRepo
 import dev.kawrl.interfaces.CommandHandler
 import dev.kawrl.interfaces.CommandHandler.ModalInterface
+import dev.kawrl.interfaces.TaskRepositoryInterface
 import net.dv8tion.jda.api.components.actionrow.ActionRow
 import net.dv8tion.jda.api.components.buttons.Button
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent
@@ -10,7 +11,7 @@ import java.sql.Date
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-class AddTaskSubmissionHandler : CommandHandler(), ModalInterface {
+class AddTaskSubmissionHandler(private val repo: TaskRepositoryInterface) : CommandHandler(), ModalInterface {
     override fun execute(event: ModalInteractionEvent) {
         val listId =
             event.modalId.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1].trim { it <= ' ' }
@@ -42,7 +43,7 @@ class AddTaskSubmissionHandler : CommandHandler(), ModalInterface {
         }
 
         try {
-            val taskID = TaskRepo.addTask(listId.toLong(), taskString, priorityLVL, deadline)
+            val taskID = repo.addTask(listId.toLong(), taskString, priorityLVL, deadline)
             logger.info("Task #{} added to list #{} by {}", taskID, listId, event.user.name)
             event.reply(String.format("Task added! (**%s** | %s)", taskString, priorityLVL))
                 .setEphemeral(true)

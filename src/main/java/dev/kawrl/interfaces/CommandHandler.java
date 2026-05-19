@@ -33,11 +33,11 @@ public abstract class CommandHandler {
         void handle(ButtonInteractionEvent event);
     }
 
-    protected void replyWithListSelector(SlashCommandInteractionEvent event, String menuID, String prompt) throws SQLException{
+    protected void replyWithListSelector(SlashCommandInteractionEvent event, String menuID, String prompt, TaskRepositoryInterface repositoryInterface) throws SQLException{
         event.deferReply(true).queue();
 
         String userId = Objects.requireNonNull(event.getMember()).getId();
-        Map<String, Long> lists = TaskRepo.getListNamesForUser(userId);
+        Map<String, Long> lists = repositoryInterface.getListNamesForUser(userId);
 
         if (lists.isEmpty()){
             event.getHook().sendMessage("You have no task lists yet! Create one first with '/create-list'")

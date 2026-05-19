@@ -1,11 +1,13 @@
 package dev.kawrl.botcommands.productivityfeatures.taskcompletion
 
+import dev.kawrl.database.TaskRepo
 import dev.kawrl.interfaces.CommandHandler
 import dev.kawrl.interfaces.CommandHandler.SlashCommandInterface
+import dev.kawrl.interfaces.TaskRepositoryInterface
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 import java.sql.SQLException
 
-class MarkTaskCommand : CommandHandler(), SlashCommandInterface {
+class MarkTaskCommand(private val repo: TaskRepositoryInterface) : CommandHandler(), SlashCommandInterface {
     override fun execute(event: SlashCommandInteractionEvent) {
         val member = event.member ?: return
         val username = member.user.name
@@ -14,7 +16,8 @@ class MarkTaskCommand : CommandHandler(), SlashCommandInterface {
             replyWithListSelector(
                 event,
                 "select-list:mark-task",
-                "Which list would you like to mark tasks in?"
+                "Which list would you like to mark tasks in?",
+                repo
             )
         } catch (e: SQLException) {
             logger.error("Database error while getting task lists from user '{}': {}", username, e.toString())

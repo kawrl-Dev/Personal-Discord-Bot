@@ -2,20 +2,21 @@ package dev.kawrl.botcommands.productivityfeatures.tasksearch
 
 import dev.kawrl.database.TaskRepo
 import dev.kawrl.interfaces.CommandHandler
+import dev.kawrl.interfaces.TaskRepositoryInterface
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent
 import java.sql.SQLException
 
-class SearchTaskSubmissionHandler: CommandHandler(), CommandHandler.ModalInterface {
+class SearchTaskSubmissionHandler(private val repo: TaskRepositoryInterface) : CommandHandler(), CommandHandler.ModalInterface {
     override fun execute(event: ModalInteractionEvent) {
         val member = event.member?: return
         val userID = member.id
         val keyword = event.getValue("search_keyword")?.asString?.trim() ?: return
 
         try {
-            val total = TaskRepo.countSearchResults(userID,keyword)
+            val total = repo.countSearchResults(userID,keyword)
 
             if (total != 0){
-                val results = TaskRepo.searchTasks(userID,keyword,0,page_Size)
+                val results = repo.searchTasks(userID,keyword,0,page_Size)
                 val page = buildSearchPage(results,keyword,0,total)
 
                 event.reply(page.content)

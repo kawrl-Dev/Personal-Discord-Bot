@@ -2,10 +2,11 @@ package dev.kawrl.botcommands.productivityfeatures.taskcreation
 
 import dev.kawrl.database.TaskRepo
 import dev.kawrl.interfaces.CommandHandler
+import dev.kawrl.interfaces.TaskRepositoryInterface
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent
 import java.sql.SQLException
 
-class CreateListCommand : CommandHandler(), CommandHandler.SlashCommandInterface {
+class CreateListCommand(private val repo: TaskRepositoryInterface) : CommandHandler(), CommandHandler.SlashCommandInterface {
     override fun execute(event: SlashCommandInteractionEvent) {
         val member = event.member
         val option = event.getOption("list-name")
@@ -18,9 +19,9 @@ class CreateListCommand : CommandHandler(), CommandHandler.SlashCommandInterface
 
         try {
             // Ensure the user row exists before inserting the list (FK constraint)
-            TaskRepo.upsertUser(userId, username)
+            repo.upsertUser(userId, username)
 
-            if (TaskRepo.listExistsForUser(userId, listName)) {
+            if (repo.listExistsForUser(userId, listName)) {
                 event.reply(String.format("You already have a task list named **%s**!", listName))
                     .setEphemeral(true)
                     .queue()
@@ -28,7 +29,7 @@ class CreateListCommand : CommandHandler(), CommandHandler.SlashCommandInterface
                 return
             }
 
-            val listId = TaskRepo.createTaskList(userId, listName)
+            val listId = repo.createTaskList(userId, listName)
             logger.info("New task list '{}' (id={}) created for user '{}'", listName, listId, username)
             event.reply(String.format("**New Task List Created!** Name: *%s*", listName))
                 .setEphemeral(true)

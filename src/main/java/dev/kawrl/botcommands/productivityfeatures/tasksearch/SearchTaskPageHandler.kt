@@ -2,9 +2,10 @@ package dev.kawrl.botcommands.productivityfeatures.tasksearch
 
 import dev.kawrl.database.TaskRepo
 import dev.kawrl.interfaces.CommandHandler
+import dev.kawrl.interfaces.TaskRepositoryInterface
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent
 
-class SearchTaskPageHandler: CommandHandler(), CommandHandler.ButtonInterface {
+class SearchTaskPageHandler(private val repo: TaskRepositoryInterface) : CommandHandler(), CommandHandler.ButtonInterface {
     override fun handle(event: ButtonInteractionEvent) {
         val member = event.member?: return
 
@@ -24,8 +25,8 @@ class SearchTaskPageHandler: CommandHandler(), CommandHandler.ButtonInterface {
         val userId = member.id
 
         try {
-            val total = TaskRepo.countSearchResults(userId, keyword)
-            val results = TaskRepo.searchTasks(userId, keyword, page * page_Size, page_Size)
+            val total = repo.countSearchResults(userId, keyword)
+            val results = repo.searchTasks(userId, keyword, page * page_Size, page_Size)
             val built = buildSearchPage(results, keyword, page, total)
 
             // editMessage replaces the existing ephemeral reply in-place
