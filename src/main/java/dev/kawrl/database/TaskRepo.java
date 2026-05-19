@@ -1,5 +1,7 @@
 package dev.kawrl.database;
 
+import dev.kawrl.interfaces.TaskRepositoryInterface;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -10,7 +12,7 @@ import java.util.Map;
  * All SQL queries for tasks and task lists live here.
  * Each method opens and closes its own connection via try-with-resources.
  */
-public class TaskRepo {
+public class TaskRepo implements TaskRepositoryInterface {
     // -------------------------------------------------------------------------
     //  Users
     // -------------------------------------------------------------------------
@@ -18,7 +20,7 @@ public class TaskRepo {
     /**
      * Inserts the user if they do not already exist (upsert by Discord user ID).
      */
-    public static void upsertUser(String userId, String username) throws SQLException {
+    public void upsertUser(String userId, String username) throws SQLException {
         String sql = """
                 INSERT INTO users (user_id, username)
                 VALUES (?, ?)
@@ -39,7 +41,7 @@ public class TaskRepo {
     /**
      * Returns true if a task list with the given name already exists for the user.
      */
-    public static boolean listExistsForUser(String userId, String listName) throws SQLException {
+    public boolean listExistsForUser(String userId, String listName) throws SQLException {
         String sql = "SELECT 1 FROM task_lists WHERE user_id = ? AND list_name = ? LIMIT 1";
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -56,7 +58,7 @@ public class TaskRepo {
      *
      * @throws SQLException if the insert fails (e.g. duplicate name constraint).
      */
-    public static long createTaskList(String userId, String listName) throws SQLException {
+    public long createTaskList(String userId, String listName) throws SQLException {
         String sql = "INSERT INTO task_lists (user_id, list_name) VALUES (?, ?)";
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -70,7 +72,7 @@ public class TaskRepo {
         }
     }
 
-    public static Map<String, Long> getListNamesForUser(String userID) throws SQLException {
+    public Map<String, Long> getListNamesForUser(String userID) throws SQLException {
         String sql = "SELECT list_id, list_name FROM task_lists WHERE user_id = ?";
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -85,7 +87,7 @@ public class TaskRepo {
         }
     }
 
-    public static int clearAllListsForUser(String userId) throws SQLException {
+    public int clearAllListsForUser(String userId) throws SQLException {
         String sql = "DELETE FROM task_lists WHERE user_id = ?";
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -97,7 +99,7 @@ public class TaskRepo {
     // -------------------------------------------------------------------------
     //  Tasks
     // -------------------------------------------------------------------------
-    public static Map<String, Long> getTasksFromTaskListForUser(String listID, String userID) throws SQLException{
+    public Map<String, Long> getTasksFromTaskListForUser(String listID, String userID) throws SQLException{
         String sql = """
                 SELECT
                 	t.task_id,
@@ -132,7 +134,7 @@ public class TaskRepo {
      * @param dueDate  optional due date (pass null to omit)
      * @return the generated task_id
      */
-    public static long addTask(long listId, String taskText, String priority, Date dueDate) throws SQLException {
+    public long addTask(long listId, String taskText, String priority, Date dueDate) throws SQLException {
         String sql = "INSERT INTO tasks (list_id, task_text, priority, due_date) VALUES (?, ?, ?, ?)";
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -153,7 +155,7 @@ public class TaskRepo {
      *
      * @return true if a row was updated, false if the task_id didn't exist.
      */
-    public static boolean completeTask(long taskId, long listID) throws SQLException {
+    public boolean completeTask(long taskId, long listID) throws SQLException {
         String sql = """
                 UPDATE tasks
                 SET tasks.task_status = 'FINISHED'
@@ -172,7 +174,7 @@ public class TaskRepo {
      * Prints all tasks in a list to a formatted string for Discord reply.
      * Returns an empty-list message if no tasks exist.
      */
-    public static String formatTaskList(long listId, String listName) throws SQLException {
+    public String formatTaskList(long listId, String listName) throws SQLException {
         String sql = """
             SELECT
                 task_id,
@@ -221,7 +223,7 @@ public class TaskRepo {
      * @param pageSize number of rows to return
      * @return ordered list of formatted result strings, ready for display
      */
-    public static List<String> searchTasks(String userId, String keyword, int offset, int pageSize) throws SQLException {
+    public List<String> searchTasks(String userId, String keyword, int offset, int pageSize) throws SQLException {
         String sql = """
             SELECT
                 t.task_text,
@@ -266,7 +268,7 @@ public class TaskRepo {
      * Returns the total number of tasks matching the keyword for a user.
      * Used to determine total page count.
      */
-    public static int countSearchResults(String userId, String keyword) throws SQLException {
+    public int countSearchResults(String userId, String keyword) throws SQLException {
         String sql = """
             SELECT COUNT(*) FROM tasks t
             JOIN task_lists tl ON t.list_id = tl.list_id
