@@ -13,6 +13,7 @@ import dev.kawrl.botcommands.productivityfeatures.tasksearch.SearchTaskCommand;
 import dev.kawrl.botcommands.productivityfeatures.tasksearch.SearchTaskPageHandler;
 import dev.kawrl.botcommands.productivityfeatures.tasksearch.SearchTaskSubmissionHandler;
 import dev.kawrl.interfaces.CommandHandler;
+import dev.kawrl.interfaces.TaskRepositoryInterface;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
@@ -31,40 +32,36 @@ public class Listeners extends ListenerAdapter {
     private final Map<String, CommandHandler.StringSelectMenuInterface> menuSelectHandlers = new HashMap<>();
     private final Map<String, CommandHandler.ButtonInterface> buttonHandlers = new HashMap<>();
 
-    public Listeners() {
+    public Listeners(TaskRepositoryInterface repo) {
         // Slash Commands
         slashCommands.put("ping", new PingCommand());
         slashCommands.put("shutdown", new ShutdownCommand());
 
                 // Productivity Bot Slash Commands
-                slashCommands.put("create-list", new CreateListCommand());
-                slashCommands.put("add-task", new AddTaskCommand());
-                slashCommands.put("mark-task", new MarkTaskCommand());
-                slashCommands.put("view-list", new ViewListCommand());
+                slashCommands.put("create-list", new CreateListCommand(repo));
+                slashCommands.put("add-task", new AddTaskCommand(repo));
+                slashCommands.put("mark-task", new MarkTaskCommand(repo));
+                slashCommands.put("view-list", new ViewListCommand(repo));
                 slashCommands.put("clear-all-lists", new ClearAllListsCommand());
                 slashCommands.put("search-task", new SearchTaskCommand());
 
                 // Menu Select Handlers
                 menuSelectHandlers.put("select-list:add-task", new AddTaskMenuHandler());
-                menuSelectHandlers.put("select-list:mark-task", new TaskSelectionHandler());
-                menuSelectHandlers.put("select-list:view-list", new ViewListHandler());
-
+                menuSelectHandlers.put("select-list:mark-task", new TaskSelectionHandler(repo));
+                menuSelectHandlers.put("select-list:view-list", new ViewListHandler(repo));
                 menuSelectHandlers.put("approve-selected-tasks:", new MarkTaskConfirmation());
 
                 // Modal Handlers
-                modalHandlers.put("add-task-modal:", new AddTaskSubmissionHandler());
-                modalHandlers.put("search-task-modal", new SearchTaskSubmissionHandler());
+                modalHandlers.put("add-task-modal:", new AddTaskSubmissionHandler(repo));
+                modalHandlers.put("search-task-modal", new SearchTaskSubmissionHandler(repo));
 
                 //Button Handlers
                 buttonHandlers.put("retry-add-task:", new AddTaskRetryHandler());
-
-                buttonHandlers.put("yes-response:", new MarkTaskHandler());
+                buttonHandlers.put("yes-response:", new MarkTaskHandler(repo));
                 buttonHandlers.put("no-response", new MarkTaskCancelHandler());
-
-                buttonHandlers.put("confirm-clear-yes",new ClearAllListsHandler());
+                buttonHandlers.put("confirm-clear-yes",new ClearAllListsHandler(repo));
                 buttonHandlers.put("confirm-clear-no",new ClearAllListsCancelHandler());
-
-                buttonHandlers.put("search-page:", new SearchTaskPageHandler());
+                buttonHandlers.put("search-page:", new SearchTaskPageHandler(repo));
     }
 
     @Override
