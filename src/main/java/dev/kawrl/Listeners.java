@@ -45,23 +45,23 @@ public class Listeners extends ListenerAdapter {
                 slashCommands.put("clear-all-lists", new ClearAllListsCommand());
                 slashCommands.put("search-task", new SearchTaskCommand());
 
-                // Menu Select Handlers
-                menuSelectHandlers.put("select-list:add-task", new AddTaskMenuHandler());
-                menuSelectHandlers.put("select-list:mark-task", new TaskSelectionHandler(repo));
-                menuSelectHandlers.put("select-list:view-list", new ViewListHandler(repo));
-                menuSelectHandlers.put("approve-selected-tasks:", new MarkTaskConfirmation());
+        // Menu Select Handlers
+        menuSelectHandlers.put("select-list:add-task", new AddTaskMenuHandler());
+        menuSelectHandlers.put("select-list:mark-task", new TaskSelectionHandler(repo));
+        menuSelectHandlers.put("select-list:view-list", new ViewListHandler(repo));
+        menuSelectHandlers.put("approve-selected-tasks:", new MarkTaskConfirmation());
 
-                // Modal Handlers
-                modalHandlers.put("add-task-modal:", new AddTaskSubmissionHandler(repo));
-                modalHandlers.put("search-task-modal", new SearchTaskSubmissionHandler(repo));
+        // Modal Handlers
+        modalHandlers.put("add-task-modal:", new AddTaskSubmissionHandler(repo));
+        modalHandlers.put("search-task-modal", new SearchTaskSubmissionHandler(repo));
 
-                //Button Handlers
-                buttonHandlers.put("retry-add-task:", new AddTaskRetryHandler());
-                buttonHandlers.put("yes-response:", new MarkTaskHandler(repo));
-                buttonHandlers.put("no-response", new MarkTaskCancelHandler());
-                buttonHandlers.put("confirm-clear-yes",new ClearAllListsHandler(repo));
-                buttonHandlers.put("confirm-clear-no",new ClearAllListsCancelHandler());
-                buttonHandlers.put("search-page:", new SearchTaskPageHandler(repo));
+        //Button Handlers
+        buttonHandlers.put("retry-add-task:", new AddTaskRetryHandler());
+        buttonHandlers.put("yes-response:", new MarkTaskHandler(repo));
+        buttonHandlers.put("no-response", new MarkTaskCancelHandler());
+        buttonHandlers.put("confirm-clear-yes",new ClearAllListsHandler(repo));
+        buttonHandlers.put("confirm-clear-no",new ClearAllListsCancelHandler());
+        buttonHandlers.put("search-page:", new SearchTaskPageHandler(repo));
     }
 
     @Override
