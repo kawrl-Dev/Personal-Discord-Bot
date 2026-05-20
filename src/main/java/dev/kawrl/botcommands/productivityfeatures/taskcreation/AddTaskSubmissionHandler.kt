@@ -45,6 +45,7 @@ class AddTaskSubmissionHandler(private val repo: TaskRepositoryInterface) : Comm
             val taskID = repo.addTask(listId.toLong(), taskString, priorityLVL, deadline)
             logger.info("Task #{} added to list #{} by {}", taskID, listId, event.user.name)
             event.reply(String.format("Task added! (**%s** | %s)", taskString, priorityLVL))
+                .addComponents(ActionRow.of(Button.primary("retry-add-task:$listId","Add another task")))
                 .setEphemeral(true)
                 .queue()
         } catch (e: Exception) {
