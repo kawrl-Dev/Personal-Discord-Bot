@@ -28,7 +28,6 @@ private val dotenv: Dotenv = Dotenv.load()
 private val log: Logger = LoggerFactory.getLogger(MyDiscordBot::class.java)
 
 object MyDiscordBot {
-    private val repo: TaskRepositoryInterface = TaskRepo()
     val userID: String = requireEnv("USER_ID")
     private val discordBotToken: String = requireEnv("BOT_API")
 
@@ -41,6 +40,7 @@ object MyDiscordBot {
         log.info("Internet Connection Confirmed. Starting up the bot right now!")
 
         DatabaseManager.initialize(dotenv)
+        val repo: TaskRepositoryInterface = TaskRepo()
 
         try {
             val registersCommands = args.isNotEmpty() && args[0] == "--register"
