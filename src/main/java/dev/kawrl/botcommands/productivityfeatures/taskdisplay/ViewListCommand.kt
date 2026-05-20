@@ -6,8 +6,8 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import java.sql.SQLException
 
 class ViewListCommand(private val repo: TaskRepositoryInterface): CommandHandler(), CommandHandler.SlashCommandInterface {
-    override fun execute(event: SlashCommandInteractionEvent?) {
-        val member = event!!.member?: return
+    override fun execute(event: SlashCommandInteractionEvent) {
+        val member = event.member?: return
         val username = member.user.name
 
         try {

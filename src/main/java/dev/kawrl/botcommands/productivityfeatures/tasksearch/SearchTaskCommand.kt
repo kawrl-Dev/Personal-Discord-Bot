@@ -5,6 +5,6 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 
 class SearchTaskCommand: CommandHandler(), CommandHandler.SlashCommandInterface {
     override fun execute(event: SlashCommandInteractionEvent) {
-        event.replyModal(SearchTaskModal.build()).queue();
+        event.replyModal(SearchTaskModal.build()).queue()
     }
 }

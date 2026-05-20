@@ -1,6 +1,5 @@
 package dev.kawrl.botcommands.productivityfeatures.taskcompletion
 
-import dev.kawrl.database.TaskRepo
 import dev.kawrl.interfaces.CommandHandler
 import dev.kawrl.interfaces.CommandHandler.StringSelectMenuInterface
 import dev.kawrl.interfaces.TaskRepositoryInterface
@@ -11,8 +10,8 @@ import java.sql.SQLException
 
 class TaskSelectionHandler(private val repo: TaskRepositoryInterface) : CommandHandler(), StringSelectMenuInterface {
     override fun handle(event: StringSelectInteractionEvent) {
-        val member = event.member
-        val username = member!!.user.name
+        val member = event.member?: return
+        val username = member.user.name
         val listId: String = event.values[0]
         try {
             val taskList = repo.getTasksFromTaskListForUser(listId,event.user.id)

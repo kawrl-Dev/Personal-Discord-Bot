@@ -1,6 +1,5 @@
 package dev.kawrl.botcommands.productivityfeatures.listdeletion;
 
-import dev.kawrl.database.TaskRepo;
 import dev.kawrl.interfaces.CommandHandler;
 import dev.kawrl.interfaces.TaskRepositoryInterface;
 import net.dv8tion.jda.api.entities.Member;

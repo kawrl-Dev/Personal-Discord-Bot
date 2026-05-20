@@ -8,6 +8,8 @@ import io.github.cdimascio.dotenv.Dotenv
 
 // Database
 import dev.kawrl.database.DatabaseManager
+import dev.kawrl.database.TaskRepo
+import dev.kawrl.interfaces.TaskRepositoryInterface
 
 // Java Discord API
 import net.dv8tion.jda.api.JDA
@@ -26,6 +28,7 @@ private val dotenv: Dotenv = Dotenv.load()
 private val log: Logger = LoggerFactory.getLogger(MyDiscordBot::class.java)
 
 object MyDiscordBot {
+    private val repo: TaskRepositoryInterface = TaskRepo()
     val userID: String = requireEnv("USER_ID")
     private val discordBotToken: String = requireEnv("BOT_API")
 
@@ -48,7 +51,7 @@ object MyDiscordBot {
                     GatewayIntent.DIRECT_MESSAGES
                 )
                 .setActivity(Activity.customStatus("Status: Active!"))
-                .addEventListeners(Listeners()).build()
+                .addEventListeners(Listeners(repo)).build()
                 .awaitReady()
 
             if (registersCommands) {
