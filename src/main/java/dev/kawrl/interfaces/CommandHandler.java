@@ -1,6 +1,5 @@
 package dev.kawrl.interfaces;
 
-import dev.kawrl.database.TaskRepo;
 import net.dv8tion.jda.api.components.actionrow.ActionRow;
 import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.components.selections.StringSelectMenu;
@@ -8,6 +7,7 @@ import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
+import net.dv8tion.jda.api.requests.restaction.interactions.ReplyCallbackAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,16 +54,21 @@ public abstract class CommandHandler {
                 .queue();
     }
 
+    @FunctionalInterface
+    protected interface ReplyAction{
+        ReplyCallbackAction reply(String message);
+    }
+
     protected void replyWithConfirmation(
-            SlashCommandInteractionEvent event,
-            String yesButtonId,
-            String noButtonId,
+            ReplyAction replyAction,
+            ButtonSpec confirm,
+            ButtonSpec cancel,
             String prompt
     ) {
-        Button yesButton = Button.success(yesButtonId, "Yes, do it!");
-        Button noButton  = Button.danger(noButtonId,  "Nevermind!");
+        Button yesButton = Button.success(confirm.getId(), confirm.getLabel());
+        Button noButton  = Button.danger(cancel.getId(),  cancel.getLabel());
 
-        event.reply(prompt)
+        replyAction.reply(prompt)
                 .addComponents(ActionRow.of(yesButton, noButton))
                 .setEphemeral(true)
                 .queue();
