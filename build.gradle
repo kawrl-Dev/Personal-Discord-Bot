@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'dev.kawrl'
-version = 'v2.0.2'
+version = 'v2.1.2'
 
 repositories {
     mavenCentral()
@@ -15,6 +15,9 @@ repositories {
 dependencies {
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation ('org.junit.jupiter:junit-jupiter')
+
+    testImplementation("org.mockito:mockito-core:5.23.0")
+    testImplementation ('org.mockito:mockito-junit-jupiter:5.23.0')
 
     // JDA
     implementation("net.dv8tion:JDA:6.4.1")
@@ -29,10 +32,10 @@ dependencies {
     implementation("tools.jackson.core:jackson-databind:3.1.1")
 
     // MySQL Connector
-    implementation 'com.mysql:mysql-connector-j:9.3.0'
+    implementation ('com.mysql:mysql-connector-j:9.3.0')
 
     // HikariCP — connection pooling
-    implementation 'com.zaxxer:HikariCP:6.3.0'
+    implementation ('com.zaxxer:HikariCP:6.3.0')
 }
 
 test {
